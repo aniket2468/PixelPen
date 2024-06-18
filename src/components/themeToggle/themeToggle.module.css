@@ -1,0 +1,26 @@
+.container {
+    width: 44px;
+    height: 22px;
+    border-radius: 50px;
+    padding: 3px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: space-between;
+    display: flex;
+    background-color: rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.ball {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: white;
+    position: absolute;
+    left: 3px;
+    transition: left 0.3s;
+}
+
+.ballMove {
+    left: 26px;
+  }
