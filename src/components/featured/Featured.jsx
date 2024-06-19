@@ -15,7 +15,7 @@ const Feature = () => {
         <div className={styles.textContainer}>
           <h1 className={styles.postTitle}>Introducing PixelPen: Your Canvas for Creative Expression</h1>
           <p className={styles.postDesc}>
-          PixelPen is a dynamic new platform designed for writers, thinkers, and storytellers to share their unique voices with the world. Inspired by the simplicity and elegance of Medium.com, PixelPen offers an intuitive and visually appealing space where creativity can flourish. Whether you're a seasoned writer or just starting your journey, PixelPen empowers you to craft engaging content, connect with a diverse audience, and inspire readers with your words. Join us in transforming thoughts into powerful narratives, one pixel at a time.
+          PixelPen is a dynamic new platform designed for writers, thinkers, and storytellers to share their unique voices with the world. Inspired by the simplicity and elegance of Medium.com, PixelPen offers an intuitive and visually appealing space where creativity can flourish. Whether you&apos;re a seasoned writer or just starting your journey, PixelPen empowers you to craft engaging content, connect with a diverse audience, and inspire readers with your words. Join us in transforming thoughts into powerful narratives, one pixel at a time.
           </p>
           <button className={styles.button}>Read More</button>
         </div>

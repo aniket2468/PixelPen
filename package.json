@@ -12,14 +12,16 @@
     "@fortawesome/fontawesome-free-solid": "^5.0.13",
     "@fortawesome/free-brands-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "autoprefixer": "^10.4.19",
     "next": "14.2.4",
     "react": "^18",
     "react-dom": "^18",
-    "react-social-icons": "^6.16.0"
+    "react-social-icons": "^6.16.0",
+    "tailwindcss": "^3.4.4"
   },
   "devDependencies": {
     "eslint": "^8",
     "eslint-config-next": "14.2.4",
-    "postcss": "^8"
+    "postcss": "^8.4.38"
   }
 }
