@@ -11,7 +11,7 @@ const AuthLinks = () => {
     const status = "nonauthenticated"
     return (
     <>
-    {status==="nonauthenticated" ? (
+    {status==="authenticated" ? (
         <Link href="/login" className={styles.link}>Login</Link>
         ) : (
         <>
