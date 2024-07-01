@@ -9,12 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^2.4.1",
     "@fortawesome/fontawesome-free-solid": "^5.0.13",
     "@fortawesome/free-brands-svg-icons": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@prisma/client": "^5.16.1",
     "autoprefixer": "^10.4.19",
+    "mongodb": "^6.8.0",
     "next": "14.2.4",
+    "next-auth": "^4.24.7",
     "react": "^18",
     "react-dom": "^18",
     "react-quill": "^2.0.0",
@@ -24,6 +28,7 @@
   "devDependencies": {
     "eslint": "^8",
     "eslint-config-next": "14.2.4",
-    "postcss": "^8.4.38"
+    "postcss": "^8.4.38",
+    "prisma": "^5.16.1"
   }
 }
