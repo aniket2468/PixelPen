@@ -3,6 +3,8 @@
   --textColor: black;
   --SoftBg: #f0f0f0;
   --SoftTextColor: #626262;
+  --icon-color-light: #000;
+  --icon-color-dark: #fff;
 }
 
 *{
@@ -26,6 +28,7 @@ a{
   --textColor:#ddd;
   --softBg:#1f273a;
   --sofTextColor:#a6a6a6;
+  --icon-color: var(--icon-color-dark);
 }
 
 .light {
@@ -33,6 +36,7 @@ a{
   --textColor: black;
   --SoftBg: #f0f0f0;
   --SoftTextColor: #626262;
+  --icon-color: var(--icon-color-light);
 }
 
 .container{
