@@ -33,37 +33,39 @@ const WritePage = () => {
     const [catSlug, setCatSlug] = useState("");
 
     useEffect(() => {
-        const storage = getStorage(app);
-        const upload = () => {
-            const name = new Date().getTime() + file.name;
-            const storageRef = ref(storage, name);
+        if (file) {
+            const storage = getStorage(app);
+            const upload = () => {
+                const name = new Date().getTime() + file.name;
+                const storageRef = ref(storage, name);
 
-            const uploadTask = uploadBytesResumable(storageRef, file);
+                const uploadTask = uploadBytesResumable(storageRef, file);
 
-            uploadTask.on(
-                "state_changed",
-                (snapshot) => {
-                    const progress =
-                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    console.log("Upload is" + progress + "% done");
-                    switch (snapshot.state) {
-                        case "paused":
-                            console.log("Upload is paused");
-                            break;
-                        case "running":
-                            console.log("Upload is running");
-                            break;
+                uploadTask.on(
+                    "state_changed",
+                    (snapshot) => {
+                        const progress =
+                            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        console.log("Upload is" + progress + "% done");
+                        switch (snapshot.state) {
+                            case "paused":
+                                console.log("Upload is paused");
+                                break;
+                            case "running":
+                                console.log("Upload is running");
+                                break;
+                        }
+                    },
+                    (error) => {},
+                    () => {
+                        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                            setMedia(downloadURL);
+                        });
                     }
-                },
-                (error) => {},
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                        setMedia(downloadURL);
-                    });
-                }
-            );
-        };
-        if (file) upload();
+                );
+            };
+            upload();
+        }
     }, [file]);
 
     useEffect(() => {
@@ -83,6 +85,12 @@ const WritePage = () => {
             .replace(/[^\w\s-]/g, "")
             .replace(/[\s_-]+/g, "-")
             .replace(/^-+|-+$/g, "");
+    
+    const handleFileInputClick = () => {
+        if (typeof window !== "undefined") {
+            document.getElementById("image").click();
+        }
+    };
 
     const handleSubmit = async () => {
         const res = await fetch("/api/posts", {
@@ -130,7 +138,7 @@ const WritePage = () => {
                             onChange={(e) => setFile(e.target.files[0])}
                             style={{ display: "none" }}
                         />
-                        <button className={styles.addButton} onClick={() => document.getElementById("image").click()}>
+                        <button className={styles.addButton} onClick={handleFileInputClick}>
                             <FontAwesomeIcon icon={faImage} width={16} height={16} />
                         </button>
                         <button className={styles.addButton}>
