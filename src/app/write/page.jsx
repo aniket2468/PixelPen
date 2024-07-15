@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './writePage.module.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -9,7 +9,7 @@ import {
     faUpload,
     faVideo
 } from "@fortawesome/free-solid-svg-icons";
-import dynamic from 'next/dynamic';
+import ReactQuill from 'react-quill';
 import "react-quill/dist/quill.bubble.css";
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -21,13 +21,9 @@ import {
 } from "firebase/storage";
 import { app } from "@/utils/firebase";
 
-// Dynamically import ReactQuill with SSR disabled
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
-
 const WritePage = () => {
     const { status } = useSession();
     const router = useRouter();
-    const fileInputRef = useRef(null);
 
     const [open, setOpen] = useState(false);
     const [file, setFile] = useState(null);
@@ -50,7 +46,7 @@ const WritePage = () => {
                     (snapshot) => {
                         const progress =
                             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        console.log("Upload is " + progress + "% done");
+                        console.log("Upload is" + progress + "% done");
                         switch (snapshot.state) {
                             case "paused":
                                 console.log("Upload is paused");
@@ -60,9 +56,7 @@ const WritePage = () => {
                                 break;
                         }
                     },
-                    (error) => {
-                        console.error("Upload error:", error);
-                    },
+                    (error) => {},
                     () => {
                         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                             setMedia(downloadURL);
@@ -75,7 +69,7 @@ const WritePage = () => {
     }, [file]);
 
     useEffect(() => {
-        if (status === "unauthenticated") {
+        if (status !== "authenticated") {
             router.push("/");
         }
     }, [status, router]);
@@ -93,7 +87,9 @@ const WritePage = () => {
             .replace(/^-+|-+$/g, "");
     
     const handleFileInputClick = () => {
-        fileInputRef.current?.click();
+        if (typeof window !== "undefined") {
+            document.getElementById("image").click();
+        }
     };
 
     const handleSubmit = async () => {
@@ -138,8 +134,8 @@ const WritePage = () => {
                     <div className={styles.add}>
                         <input
                             type="file"
-                            ref={fileInputRef}
-                            onChange={(e) => setFile(e.target.files?.[0] || null)}
+                            id="image"
+                            onChange={(e) => setFile(e.target.files[0])}
                             style={{ display: "none" }}
                         />
                         <button className={styles.addButton} onClick={handleFileInputClick}>
@@ -155,8 +151,7 @@ const WritePage = () => {
                 )}
                 <ReactQuill
                     className={styles.textArea}
-                    theme='bubble'
-                    value={value}
+                    theme='bubble' value={value}
                     onChange={setValue}
                     placeholder='Tell your story...'
                 />
