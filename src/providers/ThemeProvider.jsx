@@ -10,11 +10,9 @@ const ThemeProvider = ({children}) => {
     useEffect(() => {
         setMounted(true)
     }, [])
-    if (!mounted) {
-        return <div>Loading...</div>;
+    if (mounted) {
+        return <div className={theme}>{children}</div>;
       }
-    
-      return <div className={theme}>{children}</div>;
 }
 
 export default ThemeProvider

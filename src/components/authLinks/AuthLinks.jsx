@@ -14,11 +14,11 @@ const AuthLinks = () => {
         <Link href="/login" className={styles.link}>Login</Link>
       ) : (
         <>
-          <Link href="/write">Write</Link>
+          <Link href="/write" className={styles.link}>Write</Link>
           <span className={styles.link} onClick={signOut}>Logout</span>
         </>
       )}
-      <div className={`${styles.burger} ${open ? styles.open : ''}`} onClick={() => setOpen(!open)}>
+      <div className={styles.burger} onClick={() => setOpen(!open)}>
         <div className={styles.line}></div>
         <div className={styles.line}></div>
         <div className={styles.line}></div>

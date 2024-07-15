@@ -19,7 +19,7 @@ const Footer = () => {
           <h1 className={styles.logoText}>PixelPen</h1>
         </div>
         <p className={styles.desc}>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Blanditiis vitae, ullam magnam excepturi porro placeat veniam itaque fugiat commodi. Et, iure repellendus. Officia sed provident culpa voluptates porro quisquam. Ad.
+        PixelPen is a dynamic new platform designed for writers, thinkers, and storytellers to share their unique voices with the world. Inspired by the simplicity and elegance of Medium.com, PixelPen offers an intuitive and visually appealing space where creativity can flourish. Whether you&apos;re a seasoned writer or just starting your journey, PixelPen empowers you to craft engaging content, connect with a diverse audience, and inspire readers with your words. Join us in transforming thoughts into powerful narratives, one pixel at a time.
         </p>
         <div className={styles.icons}>
         <a href="https://www.youtube.com/"><FontAwesomeIcon icon={faYoutube} /></a>
