@@ -1,3 +1,4 @@
+"use client"
 import styles from "./homepage.module.css";
 import Feature from "@/components/featured/Featured";
 import CategoryList from "@/components/categoryList/CategoryList";

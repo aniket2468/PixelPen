@@ -2,9 +2,16 @@
 
 import Image from "next/image";
 import styles from "./writePage.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faPlus,
+    faImage,
+    faUpload,
+    faVideo
+  } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import "react-quill/dist/quill.bubble.css";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import {
   getStorage,
@@ -108,7 +115,7 @@ const WritePage = () => {
       </select>
       <div className={styles.editor}>
         <button className={styles.button} onClick={() => setOpen(!open)}>
-          <Image src="/plus.png" alt="" width={16} height={16} />
+          <FontAwesomeIcon icon={faPlus} width={16} height={16} />
         </button>
         {open && (
           <div className={styles.add}>
@@ -118,16 +125,14 @@ const WritePage = () => {
               onChange={(e) => setFile(e.target.files[0])}
               style={{ display: "none" }}
             />
-            <button className={styles.addButton}>
-              <label htmlFor="image">
-                <Image src="/image.png" alt="" width={16} height={16} />
-              </label>
+            <button className={styles.addButton} onClick={() => document.getElementById("image").click()}>
+              <FontAwesomeIcon icon={faImage} width={16} height={16} />
             </button>
             <button className={styles.addButton}>
-              <Image src="/external.png" alt="" width={16} height={16} />
+              <FontAwesomeIcon icon={faUpload} width={16} height={16} />
             </button>
             <button className={styles.addButton}>
-              <Image src="/video.png" alt="" width={16} height={16} />
+              <FontAwesomeIcon icon={faVideo} width={16} height={16} />
             </button>
           </div>
         )}
