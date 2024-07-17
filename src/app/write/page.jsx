@@ -1,6 +1,5 @@
 "use client"
 
-import Image from "next/image";
 import styles from "./writePage.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -37,10 +36,11 @@ const WritePage = () => {
   const [catSlug, setCatSlug] = useState("");
 
   useEffect(() => {
-    if (typeof window !== "undefined" && file) {
-      const storage = getStorage(app);
+    const storage = getStorage(app);
+    const upload = () => {
       const name = new Date().getTime() + file.name;
       const storageRef = ref(storage, name);
+
       const uploadTask = uploadBytesResumable(storageRef, file);
 
       uploadTask.on(
@@ -49,17 +49,25 @@ const WritePage = () => {
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           console.log("Upload is " + progress + "% done");
+          switch (snapshot.state) {
+            case "paused":
+              console.log("Upload is paused");
+              break;
+            case "running":
+              console.log("Upload is running");
+              break;
+          }
         },
-        (error) => {
-          console.error(error);
-        },
+        (error) => {},
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             setMedia(downloadURL);
           });
         }
       );
-    }
+    };
+
+    file && upload();
   }, [file]);
 
   if (status === "loading") {
@@ -68,7 +76,6 @@ const WritePage = () => {
 
   if (status === "unauthenticated") {
     router.push("/");
-    return null;
   }
 
   const slugify = (str) =>
@@ -136,15 +143,13 @@ const WritePage = () => {
             </button>
           </div>
         )}
-        {typeof window !== "undefined" && (
-          <ReactQuill
-            className={styles.textArea}
-            theme="bubble"
-            value={value}
-            onChange={setValue}
-            placeholder="Tell your story..."
-          />
-        )}
+        <ReactQuill
+          className={styles.textArea}
+          theme="bubble"
+          value={value}
+          onChange={setValue}
+          placeholder="Tell your story..."
+        />
       </div>
       <button className={styles.publish} onClick={handleSubmit}>
         Publish
