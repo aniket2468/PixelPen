@@ -8,15 +8,15 @@ const getData = async (page, cat) => {
   const res = await fetch(
     `https://pixelpen.vercel.app/api/posts?page=${page}&cat=${cat || ""}`,
     {
-      cache: "no-store"
+      cache: "no-store",
     }
   )
 
   if (!res.ok) {
-    throw new Error("Failed")
+    throw new Error("Failed");
   }
 
-  return res.json()
+  return res.json();
   }
 
   const CardList = async ({ page, cat }) => {
@@ -37,7 +37,7 @@ const getData = async (page, cat) => {
       </div>
       <Pagination page={page} hasPrev={hasPrev} hasNext={hasNext}/>
     </div>
-  )
-}
+  );
+};
 
-export default CardList
+export default CardList;
