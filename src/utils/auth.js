@@ -21,6 +21,16 @@ export const authOptions = {
       clientSecret: process.env.FACEBOOK_APP_SECRET,
     }),
   ],
+  // Add additional configurations if necessary
+  secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    jwt: true,
+  },
+  callbacks: {
+    async session({ session, user, token }) {
+      return session;
+    },
+  },
 };
 
 export const getAuthSession = () => getServerSession(authOptions);
