@@ -12,7 +12,7 @@ const calculateReadTime = (text) => {
 };
 
 const getData = async (slug) => {
-  const res = await fetch(`https://pixelpen.vercel.app/api/posts/${slug}`, {
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/posts/${slug}`, {
     cache: "no-store",
   });
 
