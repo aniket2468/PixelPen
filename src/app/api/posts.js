@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     res.status(200).json(result.ops[0]);
   } else if (req.method === 'GET') {
     const { page = 1, cat = '' } = req.query;
-    const PAGE_SIZE = 2;
+    const PAGE_SIZE = 3;
     const skip = (page - 1) * PAGE_SIZE;
 
     const query = cat ? { catSlug: cat } : {};

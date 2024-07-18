@@ -1,5 +1,6 @@
 "use client"
 import React, { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import styles from "./cardList.module.css";
 import Pagination from '../pagination/Pagination';
 import Card from '../card/Card';
@@ -19,24 +20,32 @@ const getData = async (page = 1, cat = '') => {
   return res.json();
 }
 
-const CardList = ({ page = 1, cat = '' }) => {
+const CardList = ({ cat = '' }) => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const page = parseInt(searchParams.get('page')) || 1;
+
   const [data, setData] = useState({ posts: [], count: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await getData(page, cat);
-      setData(result);
-      setLoading(false);
+      try {
+        const result = await getData(page, cat);
+        setData(result);
+        setLoading(false);
+      } catch (error) {
+        console.error(error.message);
+      }
     };
 
     fetchData();
   }, [page, cat]);
 
-  const POST_PER_PAGE = 2;
+  const POST_PER_PAGE = 3;
 
   const hasPrev = POST_PER_PAGE * (page - 1) > 0;
-  const hasNext = POST_PER_PAGE * (page - 1) + POST_PER_PAGE < data.count;
+  const hasNext = POST_PER_PAGE * page < data.count;
 
   if (loading) {
     return <div>Loading...</div>;
