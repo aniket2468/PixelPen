@@ -1,15 +1,32 @@
-import prisma from "@/utils/connect";
 import { NextResponse } from "next/server";
+import prisma from "@/utils/connect";
 
 export const GET = async () => {
   try {
-    const categories = await prisma.category.findMany();
+    const categories = await prisma.category.findMany({
+      include: {
+        Posts: {
+          select: {
+            views: true,
+          },
+        },
+      },
+    });
 
-    return new NextResponse(JSON.stringify(categories, { status: 200 }));
+    const categoriesWithViews = categories.map(category => {
+      const totalViews = category.Posts.reduce((acc, post) => acc + post.views, 0);
+      return {
+        ...category,
+        totalViews,
+      };
+    });
+
+    const sortedCategories = categoriesWithViews.sort((a, b) => b.totalViews - a.totalViews);
+    const topCategories = sortedCategories.slice(0, 6);
+
+    return NextResponse.json(topCategories, { status: 200 });
   } catch (err) {
     console.log(err);
-    return new NextResponse(
-      JSON.stringify({ message: "Something went wrong!" }, { status: 500 })
-    );
+    return NextResponse.json({ message: "Something went wrong!" }, { status: 500 });
   }
 };
