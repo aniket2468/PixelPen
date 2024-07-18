@@ -6,7 +6,7 @@ import Card from '../card/Card';
 
 const getData = async (page = 1, cat = '') => {
   const res = await fetch(
-    `/api/posts?page=${page}&cat=${cat}`,
+    `https://pixelpen.vercel.app/api/posts?page=${page}&cat=${cat}`,
     {
       cache: "no-store"
     }
