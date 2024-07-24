@@ -1,7 +1,7 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import styles from "./navbar.module.css"
+import styles from "./navbar.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faYoutube,
@@ -14,7 +14,6 @@ import Link from "next/link";
 import ThemeToggle from '../themeToggle/ThemeToggle';
 import AuthLinks from '../authLinks/AuthLinks';
 
- 
 const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
@@ -22,7 +21,7 @@ const Navbar = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim() !== '') {
-      router.push(`/search?query=${searchQuery}`);
+      router.push(`/search?query=${encodeURIComponent(searchQuery)}`);
     }
   };
 

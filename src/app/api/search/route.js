@@ -9,29 +9,34 @@ export const GET = async (req) => {
     return NextResponse.json({ message: "No search query provided." }, { status: 400 });
   }
 
+  const decodedQuery = decodeURIComponent(query);
+  const queryWords = decodedQuery.split(' ');
+
   try {
     const posts = await prisma.post.findMany({
       where: {
-        OR: [
-          {
-            title: {
-              contains: query,
-              mode: "insensitive",
+        OR: queryWords.map(word => ({
+          OR: [
+            {
+              title: {
+                contains: word,
+                mode: "insensitive",
+              },
             },
-          },
-          {
-            desc: {
-              contains: query,
-              mode: "insensitive",
+            {
+              desc: {
+                contains: word,
+                mode: "insensitive",
+              },
             },
-          },
-          {
-            catSlug: {
-              contains: query,
-              mode: "insensitive",
+            {
+              catSlug: {
+                contains: word,
+                mode: "insensitive",
+              },
             },
-          },
-        ],
+          ]
+        }))
       },
       include: {
         user: true,

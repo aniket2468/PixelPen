@@ -8,6 +8,7 @@ import Menu from '@/components/menu/Menu';
 const SearchPage = () => {
   const searchParams = useSearchParams();
   const query = searchParams.get('query');
+  const decodedQuery = decodeURIComponent(query);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -16,12 +17,12 @@ const SearchPage = () => {
     if (query) {
       const fetchData = async () => {
         try {
-          const res = await fetch(`/api/search?query=${query}`);
+          const res = await fetch(`/api/search?query=${encodeURIComponent(query)}`);
           if (!res.ok) {
             throw new Error('Failed to fetch search results');
           }
           const data = await res.json();
-          setData(data);
+          setData(data); // Ensure data is an array
         } catch (error) {
           setError(error.message);
         } finally {
@@ -39,10 +40,14 @@ const SearchPage = () => {
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.posts}>
-          <h1 className={styles.title}>Search Results</h1>
-          {data.map((item) => (
-            <Card item={item} key={item._id} />
-          ))}
+          <h1 className={styles.title}>Search Results for "{decodedQuery}"</h1>
+          {data.length > 0 ? (
+            data.map((item) => (
+              <Card item={item} key={item.id} />
+            ))
+          ) : (
+            <p>No results found</p>
+          )}
         </div>
         <div className={styles.menu}>
           <Menu />
