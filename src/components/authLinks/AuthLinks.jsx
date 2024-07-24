@@ -1,45 +1,62 @@
 "use client"
-import React, { useState } from 'react'
-import styles from "./authLinks.module.css"
-import Link from 'next/link'
-import { signOut, useSession } from 'next-auth/react'
+import React, { useState } from 'react';
+import styles from "./authLinks.module.css";
+import Link from 'next/link';
+import { signOut, useSession } from 'next-auth/react';
+import Image from 'next/image';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 const AuthLinks = () => {
-  const [open, setOpen] = useState(false)
-  const { status } = useSession();
+  const { data: session, status } = useSession();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const userProfilePic = session?.user?.image;
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
+  const handleSignOut = () => {
+    signOut();
+    setDropdownOpen(false);
+  };
 
   return (
-    <>
+    <div className={styles.authLinksContainer}>
       {status === "unauthenticated" ? (
-        <Link href="/login" className={styles.link}>Login</Link>
+        <>
+          <div className={styles.profilePicContainer} onClick={toggleDropdown}>
+            <FontAwesomeIcon icon={faUser} className={styles.profileIcon} />
+          </div>
+          {dropdownOpen && (
+            <div className={styles.dropdownMenu}>
+              <Link href="/login" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>Login</Link>
+            </div>
+          )}
+        </>
       ) : (
         <>
           <Link href="/write" className={styles.link}>Write</Link>
-          <span className={styles.link} onClick={signOut}>Logout</span>
+          <div className={styles.profilePicContainer} onClick={toggleDropdown}>
+            <Image
+              src={userProfilePic}
+              alt="Profile Picture"
+              className={styles.profilePic}
+              width={40}
+              height={40}
+            />
+          </div>
+          {dropdownOpen && (
+            <div className={styles.dropdownMenu}>
+              <Link href="/profile" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>Profile Settings</Link>
+              <span className={styles.dropdownItem} onClick={handleSignOut}>Logout</span>
+            </div>
+          )}
         </>
       )}
-      <div className={styles.burger} onClick={() => setOpen(!open)}>
-        <div className={styles.line}></div>
-        <div className={styles.line}></div>
-        <div className={styles.line}></div>
-      </div>
-      {open && (
-        <div className={styles.responsiveMenu}>
-          <Link href="/">Homepage</Link>
-          <Link href="/">Contact</Link>
-          <Link href="/">About</Link>
-          {status === "unauthenticated" ? (
-            <Link href="/login">Login</Link>
-          ) : (
-            <>
-              <Link href="/write">Write</Link>
-              <span className={styles.link}>Logout</span>
-            </>
-          )}
-        </div>
-      )}
-    </>
-  )
+    </div>
+  );
 }
 
-export default AuthLinks
+export default AuthLinks;

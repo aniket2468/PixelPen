@@ -1,58 +1,21 @@
-.link {
-    cursor: pointer;
-}
-
-.burger {
-    width: 20px;
-    height: 16px;
-    display: none;
-    flex-direction: column;
-    justify-content: space-between;
-    cursor: pointer;
+.authLinksContainer {
+    display: flex;
+    align-items: center;
+    gap: 20px;
     position: relative;
 }
-
-.line {
-    width: 100%;
-    height: 2px;
-    background-color: var(--textColor);
-    transition: transform 0.3s ease, opacity 0.3s ease;
-    position: absolute;
-    left: 0;
-    transform-origin: center;
+  
+.link {
+    cursor: pointer;
+    margin-right: 20px;
 }
 
-.line:nth-child(1) {
-    top: 0;
-}
-
-.line:nth-child(2) {
-    top: 7px;
-}
-
-.line:nth-child(3) {
-    top: 14px;
-}
-
-.burger.open .line:nth-child(1) {
-    transform: rotate(45deg);
-}
-
-.burger.open .line:nth-child(2) {
-    opacity: 0;
-}
-
-.burger.open .line:nth-child(3) {
-    transform: rotate(-45deg);
-}
-
-.responsiveMenu {
-    position: absolute;
-    top: 100px;
-    left: 0;
-    background-color: var(--bg);
-    height: calc(100vh - 100px);
-    width: 100%;
+.profilePicContainer {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+    border-radius: 50%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -60,16 +23,46 @@
     gap: 50px;
     font-size: 36px;
 }
-
-.responsiveMenu.open {
-    display: flex;
+  
+.profilePic {
+    border-radius: 50%;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+  
+.profileIcon {
+    font-size: 24px;
+    color: var(--textColor);
 }
 
+.dropdownMenu {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: var(--bg);
+    border: 1px solid var(--SoftBg);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    width: 200px;
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+}
+  
+.dropdownItem {
+    padding: 10px 20px;
+    color: var(--textColor);
+    text-align: left;
+    cursor: pointer;
+}
+  
+.dropdownItem:hover {
+    background-color: var(--SoftBg);
+}
+  
 @media screen and (max-width: 640px) {
-    .burger {
-        display: flex;
-    }
-
     .link {
         display: none;
     }

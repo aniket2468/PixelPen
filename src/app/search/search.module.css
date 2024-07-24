@@ -1,0 +1,22 @@
+.content {
+    display: flex;
+    gap: 50px;
+}
+
+.posts {
+    flex: 3;
+}
+
+.menu {
+    flex: 1;
+}
+
+.title {
+    margin: 50px 0px;
+}
+
+@media screen and (max-width: 1024px) {
+    .menu {
+        display: none;
+    }
+}
