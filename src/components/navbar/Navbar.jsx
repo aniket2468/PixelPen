@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from "./navbar.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,6 +18,7 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
   const router = useRouter();
+  const searchFormRef = useRef(null);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -25,6 +26,24 @@ const Navbar = () => {
       router.push(`/search?query=${encodeURIComponent(searchQuery)}`);
     }
   };
+
+  const handleClickOutside = (event) => {
+    if (searchFormRef.current && !searchFormRef.current.contains(event.target)) {
+      setShowSearch(false);
+    }
+  };
+
+  useEffect(() => {
+    if (showSearch) {
+      document.addEventListener('click', handleClickOutside);
+    } else {
+      document.removeEventListener('click', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [showSearch]);
 
   return (
     <div className={styles.container}>
@@ -39,7 +58,11 @@ const Navbar = () => {
       </div>
       <div className={styles.links}>
         <ThemeToggle />
-        <form className={`${styles.searchForm} ${showSearch ? styles.show : ''}`} onSubmit={handleSearch}>
+        <form
+          className={`${styles.searchForm} ${showSearch ? styles.show : ''}`}
+          onSubmit={handleSearch}
+          ref={searchFormRef}
+        >
           <input
             type="text"
             className={styles.searchInput}

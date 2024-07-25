@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from "./authLinks.module.css";
 import Link from 'next/link';
 import { signOut, useSession } from 'next-auth/react';
@@ -11,15 +11,11 @@ const AuthLinks = () => {
   const { data: session, status } = useSession();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [username, setUsername] = useState(session?.user?.username);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const fetchUsername = async () => {
       if (status === 'authenticated' && !username) {
-        const res = await fetch('/api/user');
-        if (res.ok) {
-          const userData = await res.json();
-          setUsername(userData.username);
-        }
       }
     };
     fetchUsername();
@@ -34,6 +30,24 @@ const AuthLinks = () => {
     setDropdownOpen(false);
   };
 
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    if (dropdownOpen) {
+      document.addEventListener('click', handleClickOutside);
+    } else {
+      document.removeEventListener('click', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [dropdownOpen]);
+
   const userProfilePic = session?.user?.image;
 
   return (
@@ -44,7 +58,7 @@ const AuthLinks = () => {
             <FontAwesomeIcon icon={faUser} className={styles.profileIcon} />
           </div>
           {dropdownOpen && (
-            <div className={styles.dropdownMenu}>
+            <div className={styles.dropdownMenu} ref={dropdownRef}>
               <Link href="/login" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>Login</Link>
             </div>
           )}
@@ -53,16 +67,20 @@ const AuthLinks = () => {
         <>
           <Link href="/write" className={styles.link}>Write</Link>
           <div className={styles.profilePicContainer} onClick={toggleDropdown}>
-            <Image
-              src={userProfilePic || <FontAwesomeIcon icon={faUser} className={styles.profileIcon} />}
-              alt="Profile Picture"
-              className={styles.profilePic}
-              width={40}
-              height={40}
-            />
+            {userProfilePic ? (
+              <Image
+                src={userProfilePic}
+                alt="Profile Picture"
+                className={styles.profilePic}
+                width={40}
+                height={40}
+              />
+            ) : (
+              <FontAwesomeIcon icon={faUser} className={styles.profileIcon} />
+            )}
           </div>
           {dropdownOpen && (
-            <div className={styles.dropdownMenu}>
+            <div className={styles.dropdownMenu} ref={dropdownRef}>
               <Link href={`/${username}`} className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>Profile Settings</Link>
               <span className={styles.dropdownItem} onClick={handleSignOut}>Logout</span>
             </div>

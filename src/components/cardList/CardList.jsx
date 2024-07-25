@@ -55,8 +55,8 @@ const CardList = ({ cat = '' }) => {
     <div className={styles.container}>
       <h1 className={styles.title}>Recent Posts</h1>
       <div className={styles.posts}>
-        {data.posts?.map((item) => (
-          <Card item={item} key={item._id} />
+        {data.posts?.map((item, index) => (
+          <Card item={item} key={item._id || index} />
         ))}
       </div>
       <Pagination page={page} hasPrev={hasPrev} hasNext={hasNext} />

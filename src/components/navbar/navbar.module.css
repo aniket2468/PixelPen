@@ -3,6 +3,7 @@
     align-items: center;
     justify-content: space-between;
     height: 100px;
+    position: relative;
   }
   
   .social {
@@ -30,14 +31,15 @@
   .searchForm {
     display: flex;
     align-items: center;
-    margin-right: 20px;
-    position: relative;
     transition: max-width 0.5s ease, opacity 0.5s ease;
   }
   
   .searchForm.show {
-    max-width: 400px;
-    opacity: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    max-width: 100%;
   }
   
   .searchInput {
@@ -103,12 +105,12 @@
     .searchForm.show {
       display: flex;
       opacity: 1;
-      max-width: 100%;
       position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
+      top: 32px;
+      left: 105px;
+      right: 0px;
       margin: 0 auto;
+      max-width: 100%;
     }
   
     .searchToggle {
