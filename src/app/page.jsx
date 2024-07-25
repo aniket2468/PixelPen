@@ -10,7 +10,7 @@ export default function Home({ searchParams }) {
   return (
     <div className={styles.container}>
       <Feature/>
-      <CategoryList/>
+      {/* <CategoryList/> */}
       <div className={styles.content}>
         <CardList page={page} cat="" />
         <Menu/>
