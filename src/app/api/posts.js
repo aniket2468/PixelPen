@@ -33,9 +33,7 @@ export default async function handler(req, res) {
 
     const count = await db.collection('posts').countDocuments(query);
 
-    const allPosts = await db.collection('posts').find({}).toArray();
-
-    res.status(200).json({ posts, count, allPosts });
+    res.status(200).json({ posts, count });
   } else {
     res.setHeader('Allow', ['POST', 'GET']);
     res.status(405).end(`Method ${req.method} Not Allowed`);
