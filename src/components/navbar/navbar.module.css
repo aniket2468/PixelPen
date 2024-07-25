@@ -3,38 +3,44 @@
     align-items: center;
     justify-content: space-between;
     height: 100px;
-}
-
-.social {
+  }
+  
+  .social {
     display: flex;
     gap: 10px;
     flex: 1;
-}
-
-.logo {
+  }
+  
+  .logo {
     flex: 1;
     text-align: center;
     font-size: 36px;
     font-weight: bold;
-}
-
-.links {
+  }
+  
+  .links {
     display: flex;
     gap: 20px;
     flex: 1;
     font-size: 20px;
     align-items: center;
     justify-content: flex-end;
-}
-
-.searchForm {
+  }
+  
+  .searchForm {
     display: flex;
     align-items: center;
     margin-right: 20px;
     position: relative;
-}
+    transition: max-width 0.5s ease, opacity 0.5s ease;
+  }
   
-.searchInput {
+  .searchForm.show {
+    max-width: 400px;
+    opacity: 1;
+  }
+  
+  .searchInput {
     padding: 10px;
     border: 1px solid var(--textColor);
     border-radius: 20px 0 0 20px;
@@ -42,56 +48,71 @@
     width: 200px;
     background-color: var(--bg);
     color: var(--textColor);
-}
-
-.searchInput::placeholder {
-    color: var(--SoftTextColor);
-}
+    transition: width 0.5s ease;
+  }
   
-.searchButton {
+  .searchInput::placeholder {
+    color: var(--SoftTextColor);
+  }
+  
+  .searchButton {
     padding: 10px;
     border: 1px solid var(--textColor);
     background-color: var(--textColor);
     color: var(--bg);
     cursor: pointer;
     border-radius: 0 20px 20px 0;
-}
-
-@media screen and (max-width: 1280px) {
-    .logo {
-        font-size: 32px;
-    }
-    
-    .links {
-        font-size: 18px;
-        gap: 15px;
-    }
-}
-
-@media screen and (max-width: 1024px) {
+  }
+  
+  .searchToggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--textColor);
+    font-size: 24px;
+  }
+  
+  @media screen and (max-width: 1024px) {
     .social {
-        display: none;
+      display: none;
     }
-    
+  
     .logo {
-        text-align: left;
+      text-align: left;
     }
-}
-
-@media screen and (max-width: 768px) {
+  }
+  
+  @media screen and (max-width: 768px) {
     .logo {
-        font-size: 24px;
+      font-size: 24px;
     }
-}
-
-@media screen and (max-width: 640px) {
+  }
+  
+  @media screen and (max-width: 640px) {
     .links {
-        justify-content: flex-end;
+      justify-content: flex-end;
     }
-    .link {
-        display: none;
-    }
+  
     .searchForm {
-        display: none;
+      display: none;
+      opacity: 0;
+      max-width: 0;
     }
-}
+  
+    .searchForm.show {
+      display: flex;
+      opacity: 1;
+      max-width: 100%;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+    }
+  
+    .searchToggle {
+      display: inline-block;
+    }
+  }
+  
