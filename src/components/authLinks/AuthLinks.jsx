@@ -16,6 +16,11 @@ const AuthLinks = () => {
   useEffect(() => {
     const fetchUsername = async () => {
       if (status === 'authenticated' && !username) {
+        const res = await fetch('/api/user');
+        if (res.ok) {
+          const userData = await res.json();
+          setUsername(userData.username);
+        }
       }
     };
     fetchUsername();
