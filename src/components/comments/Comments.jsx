@@ -26,6 +26,8 @@ const Comments = ({ postSlug }) => {
     fetcher
   );
 
+  const currentUrl = encodeURIComponent(`/posts/${postSlug}`)
+
   const [desc, setDesc] = useState('');
 
   const handleSubmit = async () => {
@@ -56,7 +58,7 @@ const Comments = ({ postSlug }) => {
           </button>
         </div>
       ) : (
-        <Link href="/login">Login to write a comment</Link>
+        <Link href={`/login?callbackUrl=${currentUrl}`}>Login to write a comment</Link>
       )}
       <div className={styles.comments}>
         {isLoading
