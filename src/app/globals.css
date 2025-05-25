@@ -97,3 +97,46 @@ a{
 .quill > .ql-container > .ql-editor.ql-blank::before {
   color: #b3b3b1;
 }
+
+/* Global styles for compressed images */
+.editor-image {
+  max-width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  margin: 1em auto !important;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.editor-image:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Ensure all images in post content maintain their compressed size */
+.post-content img,
+article img,
+.content img {
+  max-width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  margin: 1em auto !important;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode adjustments for image shadows */
+.dark .editor-image,
+.dark .post-content img,
+.dark article img,
+.dark .content img {
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+.dark .editor-image:hover,
+.dark .post-content img:hover,
+.dark article img:hover,
+.dark .content img:hover {
+  box-shadow: 0 6px 12px rgba(255, 255, 255, 0.15);
+}
