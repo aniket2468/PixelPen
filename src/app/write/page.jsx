@@ -193,17 +193,34 @@ const WritePage = () => {
 
   // Comprehensive cleanup on unmount
   useEffect(() => {
+    // Capture current ref values at effect setup time to avoid stale closure warnings
+    const imageInput = imageInputRef.current;
+    const addButtonImageInput = addButtonImageInputRef.current;
+    const uploadInput = uploadInputRef.current;
+    
     return () => {
       try {
-        // Clean up input values safely
-        if (imageInputRef.current) {
-          imageInputRef.current.value = '';
+        // Clean up input values safely using captured refs
+        if (imageInput && imageInput.parentNode) {
+          try {
+            imageInput.value = '';
+          } catch (e) {
+            // Ignore if input is already removed
+          }
         }
-        if (addButtonImageInputRef.current) {
-          addButtonImageInputRef.current.value = '';
+        if (addButtonImageInput && addButtonImageInput.parentNode) {
+          try {
+            addButtonImageInput.value = '';
+          } catch (e) {
+            // Ignore if input is already removed
+          }
         }
-        if (uploadInputRef.current) {
-          uploadInputRef.current.value = '';
+        if (uploadInput && uploadInput.parentNode) {
+          try {
+            uploadInput.value = '';
+          } catch (e) {
+            // Ignore if input is already removed
+          }
         }
         
         // Clean up any remaining event listeners with additional safety
@@ -292,16 +309,29 @@ const WritePage = () => {
     return () => {
       try {
         if (editor && !editor.isDestroyed) {
-          // First, blur the editor to prevent pending operations
-          if (editor.isFocused) {
-            editor.commands.blur();
+          // Check if editor is still mounted to DOM
+          const editorElement = editor.view?.dom;
+          if (editorElement && editorElement.parentNode) {
+            // First, blur the editor to prevent pending operations
+            if (editor.isFocused) {
+              editor.commands.blur();
+            }
+            
+            // Clear content to prevent any pending DOM operations
+            editor.commands.clearContent();
           }
           
-          // Clear content to prevent any pending DOM operations
-          editor.commands.clearContent();
-          
-          // Destroy the editor
-          editor.destroy();
+          // Destroy the editor with additional safety
+          setTimeout(() => {
+            try {
+              if (editor && !editor.isDestroyed) {
+                editor.destroy();
+              }
+            } catch (destroyError) {
+              // Silently handle destroy errors
+              console.warn('Editor destroy error (delayed):', destroyError);
+            }
+          }, 0);
         }
       } catch (error) {
         // Silently handle editor cleanup errors
@@ -454,6 +484,25 @@ const WritePage = () => {
       const ctx = canvas.getContext('2d');
       const img = new Image();
       
+      // Store object URL for cleanup
+      let objectUrl = null;
+      
+      const cleanup = () => {
+        try {
+          if (objectUrl) {
+            URL.revokeObjectURL(objectUrl);
+            objectUrl = null;
+          }
+          // Safely remove canvas if it has a parent
+          if (canvas && canvas.parentNode) {
+            canvas.parentNode.removeChild(canvas);
+          }
+        } catch (cleanupError) {
+          // Silently handle cleanup errors
+          console.warn('Image compression cleanup warning:', cleanupError);
+        }
+      };
+      
       img.onload = () => {
         try {
           console.log('Image loaded successfully:', img.width, 'x', img.height);
@@ -483,8 +532,7 @@ const WritePage = () => {
           
           // Convert to blob with compression
           canvas.toBlob((blob) => {
-            // Clean up object URL
-            URL.revokeObjectURL(img.src);
+            cleanup();
             
             if (blob) {
               console.log('Compression successful, blob size:', blob.size);
@@ -497,21 +545,23 @@ const WritePage = () => {
           
         } catch (error) {
           console.error('Error during image processing:', error);
-          URL.revokeObjectURL(img.src);
+          cleanup();
           reject(error);
         }
       };
       
       img.onerror = (error) => {
         console.error('Error loading image:', error);
-        URL.revokeObjectURL(img.src);
+        cleanup();
         reject(new Error('Failed to load image for compression'));
       };
       
       try {
-        img.src = URL.createObjectURL(file);
+        objectUrl = URL.createObjectURL(file);
+        img.src = objectUrl;
       } catch (error) {
         console.error('Error creating object URL:', error);
+        cleanup();
         reject(error);
       }
     });

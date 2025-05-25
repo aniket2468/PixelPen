@@ -169,46 +169,85 @@
     position: absolute;
     top: 100%;
     left: 0;
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    background: var(--bg);
+    border: 1px solid var(--softBg);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05);
     z-index: 1000;
     min-width: 140px;
-    margin-top: 4px;
+    margin-top: 6px;
     pointer-events: auto;
     overflow: hidden;
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+    animation: dropdownFadeIn 0.2s ease forwards;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+@keyframes dropdownFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.dropdown::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 20px;
+    width: 12px;
+    height: 12px;
+    background: var(--bg);
+    border: 1px solid var(--softBg);
+    border-bottom: none;
+    border-right: none;
+    transform: rotate(45deg);
+    z-index: -1;
 }
 
 .dropdown button {
     display: block;
     width: 100%;
     text-align: left;
-    padding: 8px 12px;
+    padding: 10px 16px;
     border: none;
     background: none;
     cursor: pointer;
     font-size: 14px;
-    color: #374151;
-    transition: background-color 0.2s;
+    color: var(--textColor);
+    transition: all 0.2s ease;
+    margin: 2px 0;
+    font-weight: 500;
 }
 
 .dropdown button:hover {
-    background: #f3f4f6;
+    background: var(--softBg);
+    color: var(--primary, #3b82f6);
+    padding-left: 20px;
+    transform: translateX(4px);
 }
 
 .dropdown button.isActive {
     background: #ede9fe;
     color: #7c3aed;
-    font-weight: 500;
+    font-weight: 600;
+    padding-left: 20px;
 }
 
 .dropdown button:first-child {
-    border-radius: 6px 6px 0 0;
+    margin-top: 0;
+    border-radius: 12px 12px 0 0;
 }
 
 .dropdown button:last-child {
-    border-radius: 0 0 6px 6px;
+    margin-bottom: 0;
+    border-radius: 0 0 12px 12px;
+}
+
+.dropdown button:active {
+    transform: translateX(4px) scale(0.98);
 }
 
 .addText {
@@ -256,6 +295,14 @@
     .dropdown {
         background: #1f2937;
         border-color: #374151;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 4px 10px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+    }
+
+    .dropdown::before {
+        background: #1f2937;
+        border-color: #374151;
     }
 
     .dropdown button {
@@ -264,6 +311,7 @@
 
     .dropdown button:hover {
         background: #374151;
+        color: #60a5fa;
     }
 
     .dropdown button.isActive {
@@ -306,6 +354,14 @@
 :global(.dark) .dropdown {
     background: #1f2937 !important;
     border-color: #374151 !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+}
+
+:global(.dark) .dropdown::before {
+    background: #1f2937 !important;
+    border-color: #374151 !important;
 }
 
 :global(.dark) .dropdown button {
@@ -314,6 +370,7 @@
 
 :global(.dark) .dropdown button:hover {
     background: #374151 !important;
+    color: #60a5fa !important;
 }
 
 :global(.dark) .dropdown button.isActive {
@@ -360,6 +417,14 @@
 :global(.light) .dropdown {
     background: white !important;
     border-color: #e5e7eb !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+}
+
+:global(.light) .dropdown::before {
+    background: white !important;
+    border-color: #e5e7eb !important;
 }
 
 :global(.light) .dropdown button {
@@ -368,11 +433,7 @@
 
 :global(.light) .dropdown button:hover {
     background: #f3f4f6 !important;
-}
-
-:global(.light) .dropdown button.isActive {
-    background: #ede9fe !important;
-    color: #7c3aed !important;
+    color: #3b82f6 !important;
 }
 
 :global(.light) .titleInput::placeholder {
@@ -393,6 +454,20 @@
     .menuBar button {
         font-size: 13px;
         padding: 5px 10px;
+    }
+    
+    .dropdown {
+        min-width: 120px;
+        border-radius: 10px;
+    }
+    
+    .dropdown button {
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+    
+    .dropdown button:hover {
+        padding-left: 18px;
     }
 }
 

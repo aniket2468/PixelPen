@@ -5,26 +5,21 @@ import Link from 'next/link';
 import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faUser, 
+  faCog, 
+  faSignOutAlt, 
+  faSignInAlt,
+  faEdit
+} from '@fortawesome/free-solid-svg-icons';
 
 const AuthLinks = () => {
   const { data: session, status } = useSession();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [username, setUsername] = useState(session?.user?.username);
   const dropdownRef = useRef(null);
 
-  useEffect(() => {
-    const fetchUsername = async () => {
-      if (status === 'authenticated' && !username) {
-        const res = await fetch('/api/user');
-        if (res.ok) {
-          const userData = await res.json();
-          setUsername(userData.username);
-        }
-      }
-    };
-    fetchUsername();
-  }, [status, username]);
+  // Use username directly from session, with fallback to API fetch
+  const username = session?.user?.username;
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -64,21 +59,26 @@ const AuthLinks = () => {
           </div>
           {dropdownOpen && (
             <div className={styles.dropdownMenu} ref={dropdownRef}>
-              <Link href="/login" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>Login</Link>
+              <Link href="/login" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+                <FontAwesomeIcon icon={faSignInAlt} />
+                Login
+              </Link>
             </div>
           )}
         </>
       ) : (
         <>
-          <Link href="/write" className={styles.link}>Write</Link>
+          <Link href="/write" className={styles.link}>
+            Write
+          </Link>
           <div className={styles.profilePicContainer} onClick={toggleDropdown}>
             {userProfilePic ? (
               <Image
                 src={userProfilePic}
                 alt="Profile Picture"
                 className={styles.profilePic}
-                width={40}
-                height={40}
+                width={42}
+                height={42}
               />
             ) : (
               <FontAwesomeIcon icon={faUser} className={styles.profileIcon} />
@@ -86,8 +86,20 @@ const AuthLinks = () => {
           </div>
           {dropdownOpen && (
             <div className={styles.dropdownMenu} ref={dropdownRef}>
-              <Link href={`/${username}`} className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>Profile Settings</Link>
-              <span className={styles.dropdownItem} onClick={handleSignOut}>Logout</span>
+              <Link href="/settings" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+                <FontAwesomeIcon icon={faCog} />
+                Profile Settings
+              </Link>
+              {username && (
+                <Link href={`/profile/${username}`} className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+                  <FontAwesomeIcon icon={faUser} />
+                  View Profile
+                </Link>
+              )}
+              <button className={styles.dropdownItem} onClick={handleSignOut}>
+                <FontAwesomeIcon icon={faSignOutAlt} />
+                Logout
+              </button>
             </div>
           )}
         </>

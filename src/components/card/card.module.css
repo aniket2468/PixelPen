@@ -35,6 +35,28 @@
     font-size: 18px;
     font-weight: 300;
     color: var(--softTextColor);
+    line-height: 1.6;
+    /* CSS-based truncation for better visual layout */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* Fallback for browsers that don't support line-clamp */
+    max-height: calc(1.6em * 3); /* 3 lines * line-height */
+    word-wrap: break-word;
+    hyphens: auto;
+}
+
+/* Fallback for browsers that don't support -webkit-line-clamp */
+@supports not (-webkit-line-clamp: 3) {
+    .desc {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-height: none;
+    }
 }
 
 .link {
@@ -46,5 +68,27 @@
 @media screen and (max-width:1280px) {
     .imageContainer {
         display: none;
+    }
+    
+    .desc {
+        -webkit-line-clamp: 4; /* Show more lines on smaller screens */
+        max-height: calc(1.6em * 4);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        gap: 30px;
+        margin-bottom: 30px;
+    }
+    
+    .textContainer {
+        gap: 20px;
+    }
+    
+    .desc {
+        font-size: 16px;
+        -webkit-line-clamp: 3;
+        max-height: calc(1.6em * 3);
     }
 }

@@ -4,6 +4,20 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const Card = ({ item }) => {
+  const stripHtmlTags = (html) => {
+    if (!html) return '';
+    
+    // Remove HTML tags
+    const stripped = html.replace(/<[^>]*>/g, '');
+    
+    // Decode HTML entities
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = stripped;
+    const decoded = textarea.value;
+    
+    return decoded;
+  };
+
   return (
     <div className={styles.container}>
       {item.img && (
@@ -21,7 +35,9 @@ const Card = ({ item }) => {
         <Link href={`/posts/${item.slug}`}>
           <h1>{item.title}</h1>
         </Link>
-        <div className={styles.desc} dangerouslySetInnerHTML={{ __html: `${item.desc.substring(0, 60)}...` }} />
+        <div className={styles.desc}>
+          {stripHtmlTags(item.desc)}
+        </div>
         <Link href={`/posts/${item.slug}`} className={styles.link}>Read More</Link>
       </div>
     </div>
