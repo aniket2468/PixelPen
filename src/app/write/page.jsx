@@ -64,8 +64,11 @@ const WritePage = () => {
   const [uploading, setUploading] = useState(false);
   const [addButtonUploading, setAddButtonUploading] = useState(false);
   const [showHeadingDropdown, setShowHeadingDropdown] = useState(false);
-  const [isUnmounting, setIsUnmounting] = useState(false);
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const dropdownRef = useRef(null);
+  const categoryDropdownRef = useRef(null);
+  const menuBarRef = useRef(null);
 
   // Link modal state
   const [showLinkModal, setShowLinkModal] = useState(false);
@@ -137,21 +140,61 @@ const WritePage = () => {
     };
   }, [showLinkModal]);
 
+  // Handle click outside category dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(event.target)) {
+        setShowCategoryDropdown(false);
+      }
+    };
+
+    if (showCategoryDropdown && typeof document !== 'undefined') {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      if (typeof document !== 'undefined') {
+        try {
+          document.removeEventListener('mousedown', handleClickOutside);
+        } catch (error) {
+          // Silently handle cleanup errors
+        }
+      }
+    };
+  }, [showCategoryDropdown]);
+
+  // Sticky menuBar detection and enhancement
+  useEffect(() => {
+    const menuBar = menuBarRef.current;
+    if (!menuBar) return;
+
+    // Use Intersection Observer for better performance
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const isSticky = entry.boundingClientRect.top <= 0 && entry.intersectionRatio < 1;
+        if (isSticky) {
+          menuBar.setAttribute('data-sticky', 'true');
+        } else {
+          menuBar.removeAttribute('data-sticky');
+        }
+      },
+      {
+        threshold: [0, 1],
+        rootMargin: '-1px 0px 0px 0px'
+      }
+    );
+
+    observer.observe(menuBar);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   // Comprehensive cleanup on unmount
   useEffect(() => {
     return () => {
       try {
-        // Set unmounting flag to prevent further operations
-        setIsUnmounting(true);
-        
-        // Immediately set states to prevent further interactions
-        setShowHeadingDropdown(false);
-        setShowLinkModal(false);
-        
-        // Clear any pending uploads
-        setUploading(false);
-        setAddButtonUploading(false);
-        
         // Clean up input values safely
         if (imageInputRef.current) {
           imageInputRef.current.value = '';
@@ -267,6 +310,22 @@ const WritePage = () => {
     };
   }, [editor]);
 
+  // Auto-focus the editor when it's ready
+  useEffect(() => {
+    if (editor && !editor.isDestroyed) {
+      // Small delay to ensure DOM is ready
+      const timer = setTimeout(() => {
+        try {
+          editor.commands.focus();
+        } catch (error) {
+          console.warn('Auto-focus failed:', error);
+        }
+      }, 100);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [editor]);
+
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
     setUploading(true);
@@ -314,6 +373,21 @@ const WritePage = () => {
   const imageInputRef = useRef();
   const addButtonImageInputRef = useRef();
   const uploadInputRef = useRef();
+
+  // Category data with colors
+  const categories = [
+    { value: "style", label: "Style", color: "#57c4ff31" },
+    { value: "fashion", label: "Fashion", color: "#da85c731" },
+    { value: "food", label: "Food", color: "#7fb88133" },
+    { value: "travel", label: "Travel", color: "#ff795736" },
+    { value: "culture", label: "Culture", color: "#ffb04f45" },
+    { value: "coding", label: "Coding", color: "#5e4fff31" }
+  ];
+
+  // Helper function to get selected category data
+  const getSelectedCategoryData = () => {
+    return categories.find(cat => cat.value === selectedCategory) || { label: "Select Category", color: "transparent" };
+  };
 
   // Link modal helper functions
   const resetLinkModal = () => {
@@ -574,7 +648,7 @@ const WritePage = () => {
   };
 
   const addLink = () => {
-    if (!editor || editor.isDestroyed || isUnmounting) return;
+    if (!editor || editor.isDestroyed) return;
     
     // Check if text is selected
     const { from, to } = editor.state.selection;
@@ -666,19 +740,44 @@ const WritePage = () => {
         onChange={(e) => setTitle(e.target.value)}
       />
       <div className={styles.uploadContainer}>
-        <select
-          className={styles.customSelect}
-          onChange={(e) => setCatSlug(e.target.value)}
-          defaultValue=""
-        >
-          <option disabled value="">Select Category</option>
-          <option value="style">Style</option>
-          <option value="fashion">Fashion</option>
-          <option value="food">Food</option>
-          <option value="culture">Culture</option>
-          <option value="travel">Travel</option>
-          <option value="coding">Coding</option>
-        </select>
+        <div className={styles.categoryDropdownContainer} ref={categoryDropdownRef}>
+          <button
+            className={`${styles.categoryDropdownButton} ${showCategoryDropdown ? styles.open : ''}`}
+            onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+            type="button"
+          >
+            <div className={styles.categoryButtonContent}>
+              <div 
+                className={styles.categoryColorIndicator}
+                style={{ backgroundColor: getSelectedCategoryData().color }}
+              ></div>
+              <span>{getSelectedCategoryData().label}</span>
+            </div>
+            <FontAwesomeIcon icon={faChevronDown} className={styles.categoryDropdownIcon} />
+          </button>
+          {showCategoryDropdown && (
+            <div className={styles.categoryDropdownMenu}>
+              {categories.map((category) => (
+                <button
+                  key={category.value}
+                  className={`${styles.categoryDropdownItem} ${selectedCategory === category.value ? styles.selected : ''}`}
+                  onClick={() => {
+                    setSelectedCategory(category.value);
+                    setCatSlug(category.value);
+                    setShowCategoryDropdown(false);
+                  }}
+                  type="button"
+                >
+                  <div 
+                    className={styles.categoryColorIndicator}
+                    style={{ backgroundColor: category.color }}
+                  ></div>
+                  <span>{category.label}</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
         <input type="file" ref={uploadInputRef} style={{ display: "none" }} onChange={handleFileChange} />
         <button onClick={() => uploadInputRef.current?.click()} className={styles.uploadButton}>
@@ -690,19 +789,19 @@ const WritePage = () => {
       {addButtonUploading && <span>Uploading image...</span>}
 
       <div className={styles.editorContainer}>
-        <div className={styles.menuBar}>
+        <div className={styles.menuBar} ref={menuBarRef}>
           {/* Undo/Redo */}
           <button
-            onClick={() => editor && !isUnmounting && editor.chain().focus().undo().run()}
-            disabled={!editor || !editor.can().undo() || isUnmounting}
+            onClick={() => editor && editor.chain().focus().undo().run()}
+            disabled={!editor || !editor.can().undo()}
             className={styles.toolbarButton}
             title="Undo"
           >
             <FontAwesomeIcon icon={faUndo} />
           </button>
           <button
-            onClick={() => editor && !isUnmounting && editor.chain().focus().redo().run()}
-            disabled={!editor || !editor.can().redo() || isUnmounting}
+            onClick={() => editor && editor.chain().focus().redo().run()}
+            disabled={!editor || !editor.can().redo()}
             className={styles.toolbarButton}
             title="Redo"
           >
@@ -905,7 +1004,18 @@ const WritePage = () => {
             <span className={styles.addText}>{addButtonUploading ? 'Uploading...' : 'Add'}</span>
           </button>
         </div>
-        {editor && !isUnmounting && <EditorContent editor={editor} className={styles.editor} />}
+        {editor && (
+          <div 
+            className={styles.editor}
+            onClick={() => {
+              if (editor && !editor.isDestroyed) {
+                editor.commands.focus();
+              }
+            }}
+          >
+            <EditorContent editor={editor} />
+          </div>
+        )}
       </div>
 
       <button className={styles.publish} onClick={handleSubmit}>Publish</button>

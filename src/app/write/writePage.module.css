@@ -41,6 +41,12 @@
     flex: 1;
 }
 
+.customSelect:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
 .uploadButton {
     padding: 8px 16px;
     background-color: #86868652;
@@ -63,6 +69,9 @@
     border: 1px solid var(--borderColor);
     border-radius: 4px;
     margin-bottom: 20px;
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
 }
 
 .menuBar {
@@ -72,10 +81,28 @@
     gap: 2px;
     background: #fff;
     border: 1px solid #e5e7eb;
-    border-radius: 8px;
+    border-radius: 8px 8px 0 0;
     padding: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 0;
     flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: box-shadow 0.2s ease-in-out;
+    flex-shrink: 0;
+}
+
+/* Add shadow when toolbar is stuck to top */
+.menuBar:not(:first-child) {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhance shadow for better visibility when sticky */
+.menuBar[data-sticky="true"] {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 0;
+    margin-bottom: 0;
+    border-bottom: 2px solid var(--borderColor);
 }
 
 .toolbarButton {
@@ -196,6 +223,14 @@
         border-color: #374151;
     }
 
+    .menuBar:not(:first-child) {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .menuBar[data-sticky="true"] {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
     .toolbarButton {
         color: #e5e7eb;
     }
@@ -243,6 +278,14 @@
     border-color: #374151 !important;
 }
 
+:global(.dark) .menuBar:not(:first-child) {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+:global(.dark) .menuBar[data-sticky="true"] {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
 :global(.dark) .toolbarButton {
     color: #e5e7eb !important;
 }
@@ -287,6 +330,14 @@
 :global(.light) .menuBar {
     background: #fff !important;
     border-color: #e5e7eb !important;
+}
+
+:global(.light) .menuBar:not(:first-child) {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+:global(.light) .menuBar[data-sticky="true"] {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
 }
 
 :global(.light) .toolbarButton {
@@ -494,6 +545,12 @@
 .editor {
     padding: 20px;
     min-height: 400px;
+    flex: 1;
+    background: var(--bg);
+    border-radius: 0 0 4px 4px;
+    position: relative;
+    z-index: 1;
+    cursor: text;
 }
 
 .editor :global(.ProseMirror) {
@@ -501,6 +558,21 @@
     min-height: 400px;
     color: var(--textColor);
     background-color: transparent;
+    line-height: 1.6;
+    font-size: 16px;
+    cursor: text;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    pointer-events: auto;
+}
+
+.editor :global(.ProseMirror:empty:before) {
+    content: 'Start writing your article...';
+    color: var(--textColorSoft);
+    opacity: 0.6;
+    pointer-events: none;
+    position: absolute;
 }
 
 .editor :global(.ProseMirror p) {
@@ -1024,4 +1096,173 @@
     .modalFooter button {
         width: 100%;
     }
+}
+
+/* Custom Category Dropdown */
+.categoryDropdownContainer {
+    position: relative;
+    display: inline-block;
+    flex: 1;
+    min-width: 200px;
+}
+
+.categoryDropdownButton {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--borderColor);
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: var(--bg);
+    color: var(--textColor);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.2s ease;
+    min-height: 42px;
+}
+
+.categoryDropdownButton:hover {
+    border-color: #3b82f6;
+}
+
+.categoryDropdownButton:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.categoryButtonContent {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.categoryColorIndicator {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.categoryDropdownIcon {
+    font-size: 12px;
+    opacity: 0.7;
+    transition: transform 0.2s ease;
+}
+
+.categoryDropdownButton.open .categoryDropdownIcon {
+    transform: rotate(180deg);
+}
+
+.categoryDropdownMenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg);
+    border: 1px solid var(--borderColor);
+    border-radius: 6px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    z-index: 1000;
+    margin-top: 4px;
+    overflow: hidden;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.categoryDropdownItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+    color: var(--textColor);
+}
+
+.categoryDropdownItem:hover {
+    background: var(--borderColor);
+}
+
+.categoryDropdownItem.selected {
+    background: #ede9fe;
+    color: #7c3aed;
+    font-weight: 500;
+}
+
+/* Dark mode support for category dropdown */
+@media (prefers-color-scheme: dark) {
+    .categoryDropdownButton {
+        background: #1f2937;
+        border-color: #374151;
+        color: #e5e7eb;
+    }
+
+    .categoryDropdownButton:hover {
+        border-color: #60a5fa;
+    }
+
+    .categoryDropdownButton:focus {
+        border-color: #60a5fa;
+        box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+    }
+
+    .categoryDropdownMenu {
+        background: #1f2937;
+        border-color: #374151;
+    }
+
+    .categoryDropdownItem {
+        color: #e5e7eb;
+    }
+
+    .categoryDropdownItem:hover {
+        background: #374151;
+    }
+
+    .categoryDropdownItem.selected {
+        background: #581c87;
+        color: #ddd6fe;
+    }
+}
+
+/* Theme-based dark mode support for category dropdown */
+:global(.dark) .categoryDropdownButton {
+    background: #1f2937 !important;
+    border-color: #374151 !important;
+    color: #e5e7eb !important;
+}
+
+:global(.dark) .categoryDropdownButton:hover {
+    border-color: #60a5fa !important;
+}
+
+:global(.dark) .categoryDropdownButton:focus {
+    border-color: #60a5fa !important;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1) !important;
+}
+
+:global(.dark) .categoryDropdownMenu {
+    background: #1f2937 !important;
+    border-color: #374151 !important;
+}
+
+:global(.dark) .categoryDropdownItem {
+    color: #e5e7eb !important;
+}
+
+:global(.dark) .categoryDropdownItem:hover {
+    background: #374151 !important;
+}
+
+:global(.dark) .categoryDropdownItem.selected {
+    background: #581c87 !important;
+    color: #ddd6fe !important;
 }
