@@ -97,6 +97,12 @@
     border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
+.message.info {
+    background: rgba(59, 130, 246, 0.1);
+    color: #2563eb;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
 .content {
     display: grid;
     grid-template-columns: 350px 1fr;
@@ -475,8 +481,15 @@
 }
 
 :global(.dark) .message.error {
-    background: rgba(239, 68, 68, 0.15) !important;
-    color: #f87171 !important;
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+:global(.dark) .message.info {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
 :global(.dark) .statItem:hover {

@@ -73,17 +73,15 @@ const ProfileSettings = () => {
     }
   }, [status, session, router]);
 
-  // Handle file upload
-  useEffect(() => {
-    const uploadImage = () => {
-      if (!file || !session?.user?.email) return;
+  const uploadImageToFirebase = async (file, userEmail) => {
+    if (!file || !userEmail) return null;
 
-      setImageUploading(true);
-      const storage = getStorage(app);
-      const fileName = `profiles/${session.user.email}-${Date.now()}-${file.name}`;
-      const storageRef = ref(storage, fileName);
-      const uploadTask = uploadBytesResumable(storageRef, file);
+    const storage = getStorage(app);
+    const fileName = `profiles/${userEmail}-${Date.now()}-${file.name}`;
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, file);
 
+    return new Promise((resolve, reject) => {
       uploadTask.on(
         'state_changed',
         (snapshot) => {
@@ -91,22 +89,16 @@ const ProfileSettings = () => {
         },
         (error) => {
           console.error('Upload error:', error);
-          setMessage({ type: 'error', text: 'Failed to upload image. Please try again.' });
-          setImageUploading(false);
+          reject(error);
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setFormData(prev => ({ ...prev, image: downloadURL }));
-            setPreviewImage(downloadURL);
-            setImageUploading(false);
-            setMessage({ type: 'success', text: 'Image uploaded successfully!' });
-          });
+            resolve(downloadURL);
+          }).catch(reject);
         }
       );
-    };
-
-    uploadImage();
-  }, [file, session]);
+    });
+  };
 
   const fetchUserStats = async () => {
     try {
@@ -171,6 +163,8 @@ const ProfileSettings = () => {
       }
 
       setFile(selectedFile);
+      setMessage({ type: 'info', text: 'Image selected. Click "Save Changes" to upload.' });
+      
       // Create preview
       const reader = new FileReader();
       reader.onload = (e) => setPreviewImage(e.target.result);
@@ -187,30 +181,64 @@ const ProfileSettings = () => {
     }
 
     setLoading(true);
-    setMessage({ type: '', text: '' });
+    setImageUploading(true);
+    setMessage({ type: '', text: '' }); // Clear any existing messages
 
     try {
+      let imageUrl = formData.image; // Keep existing image by default
+      
+      // Upload new image if file is selected
+      if (file) {
+        try {
+          imageUrl = await uploadImageToFirebase(file, session.user.email);
+          // Don't show intermediate success message - wait for profile update
+        } catch (error) {
+          console.error('Image upload failed:', error);
+          setMessage({ type: 'error', text: 'Failed to upload image. Please try again.' });
+          setLoading(false);
+          setImageUploading(false);
+          return;
+        }
+      }
+
+      // Update profile with new image URL
       const response = await fetch('/api/profile', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          image: imageUrl
+        }),
       });
 
       if (response.ok) {
         const updatedUser = await response.json();
         
-        // Update the session with new data
-        await update({
-          ...session,
-          user: {
-            ...session.user,
-            name: updatedUser.name,
-            username: updatedUser.username,
-            image: updatedUser.image
+        // Update the session without causing a page refresh
+        try {
+          // Only update session if there are actual changes
+          const sessionNeedsUpdate = 
+            session.user.name !== updatedUser.name ||
+            session.user.username !== updatedUser.username ||
+            session.user.image !== updatedUser.image;
+            
+          if (sessionNeedsUpdate) {
+            await update({
+              ...session,
+              user: {
+                ...session.user,
+                name: updatedUser.name,
+                username: updatedUser.username,
+                image: updatedUser.image
+              }
+            });
           }
-        });
+        } catch (sessionError) {
+          // If session update fails, continue anyway - it's not critical
+          console.warn('Session update failed:', sessionError);
+        }
 
         // Update local form data to reflect the saved changes
         setFormData(prev => ({
@@ -220,7 +248,17 @@ const ProfileSettings = () => {
           image: updatedUser.image
         }));
 
-        setMessage({ type: 'success', text: 'Profile updated successfully!' });
+        setPreviewImage(updatedUser.image || '');
+        setFile(null); // Clear the file input
+        
+        // Also clear the actual file input element
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+        
+        // Show single success message based on what was updated
+        const successMessage = file ? 'Profile and image updated successfully!' : 'Profile updated successfully!';
+        setMessage({ type: 'success', text: successMessage });
         setIsEditing(false);
         
         // Refetch user stats to ensure everything is up to date
@@ -235,6 +273,7 @@ const ProfileSettings = () => {
     }
 
     setLoading(false);
+    setImageUploading(false);
   };
 
   const handleCancel = () => {
@@ -273,7 +312,12 @@ const ProfileSettings = () => {
 
       {message.text && (
         <div className={`${styles.message} ${styles[message.type]}`}>
-          <FontAwesomeIcon icon={message.type === 'success' ? faCheck : faExclamationTriangle} />
+          <FontAwesomeIcon icon={
+            message.type === 'success' ? faCheck : 
+            message.type === 'error' ? faExclamationTriangle :
+            message.type === 'info' ? faCamera :
+            faExclamationTriangle
+          } />
           <span>{message.text}</span>
         </div>
       )}
@@ -383,15 +427,16 @@ const ProfileSettings = () => {
                     onClick={handleSubmit}
                     className={styles.saveButton}
                     disabled={loading || imageUploading}
+                    type="button"
                   >
                     <FontAwesomeIcon icon={faSave} />
-                    {loading ? 'Saving...' : 'Save Changes'}
+                    {imageUploading ? 'Uploading Image...' : loading ? 'Saving...' : 'Save Changes'}
                   </button>
                 </div>
               )}
             </div>
 
-            <form onSubmit={handleSubmit} className={styles.form}>
+            <form className={styles.form}>
               <div className={styles.formGroup}>
                 <label htmlFor="name" className={styles.label}>
                   <FontAwesomeIcon icon={faUser} />
@@ -428,7 +473,7 @@ const ProfileSettings = () => {
                 {errors.username && <span className={styles.errorText}>{errors.username}</span>}
                 {!errors.username && formData.username && (
                   <span className={styles.helpText}>
-                    Your profile will be available at: /profile/@{formData.username}
+                    Your profile will be available at: /profile/{formData.username}
                   </span>
                 )}
               </div>

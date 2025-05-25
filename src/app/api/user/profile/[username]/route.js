@@ -23,6 +23,7 @@ export const GET = async (req, { params }) => {
         username: true,
         email: true,
         image: true,
+        createdAt: true,
         _count: {
           select: {
             Post: true,
@@ -49,26 +50,9 @@ export const GET = async (req, { params }) => {
     });
 
     const totalViews = posts.reduce((sum, post) => sum + post.views, 0);
-    const memberSince = user.id ? await prisma.user.findUnique({
-      where: { id: user.id },
-      select: { id: true }
-    }).then(async (u) => {
-      // Get the user creation date from the database
-      // Since we don't store createdAt in user table, we'll use the earliest post or account creation
-      const firstPost = await prisma.post.findFirst({
-        where: { userEmail: user.email },
-        orderBy: { createdAt: 'asc' },
-        select: { createdAt: true }
-      });
-      
-      const account = await prisma.account.findFirst({
-        where: { userId: user.id },
-        select: { userId: true }
-      });
-      
-      // Use a reasonable fallback date if no posts exist
-      return firstPost?.createdAt || new Date('2024-01-01');
-    }) : new Date();
+    
+    // Use the user's actual creation date
+    const memberSince = user.createdAt || new Date();
 
     // Get recent posts (limit 5)
     const recentPosts = await prisma.post.findMany({

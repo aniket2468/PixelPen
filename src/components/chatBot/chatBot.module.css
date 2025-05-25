@@ -1,0 +1,247 @@
+.chatPrompt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: #57c4ff31;
+  color: #57c4ff;
+  border: 1px solid #57c4ff50;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  width: 100%;
+  margin-top: 16px;
+}
+
+.chatPrompt:hover {
+  background: #57c4ff45;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(87, 196, 255, 0.2);
+}
+
+.botIcon {
+  font-size: 1.2rem;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-4px);
+  }
+  60% {
+    transform: translateY(-2px);
+  }
+}
+
+.chatContainer {
+  background: var(--bg);
+  border: 1px solid var(--softBg);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-height: 500px;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chatHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: var(--softBg);
+  border-bottom: 1px solid var(--borderColor);
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: var(--textColor);
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: var(--softTextColor);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.closeBtn:hover {
+  background: var(--borderColor);
+  color: var(--textColor);
+}
+
+.messagesContainer {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  max-height: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
+  max-width: 80%;
+}
+
+.botMessage {
+  align-self: flex-start;
+}
+
+.userMessage {
+  align-self: flex-end;
+}
+
+.messageContent {
+  padding: 12px 16px;
+  border-radius: 16px;
+  line-height: 1.4;
+  font-size: 14px;
+}
+
+.botMessage .messageContent {
+  background: #7fb88133;
+  color: var(--textColor);
+  border-bottom-left-radius: 4px;
+}
+
+.userMessage .messageContent {
+  background: #57c4ff31;
+  color: var(--textColor);
+  border-bottom-right-radius: 4px;
+}
+
+.timestamp {
+  font-size: 11px;
+  color: var(--softTextColor);
+  margin-top: 4px;
+  align-self: flex-end;
+}
+
+.botMessage .timestamp {
+  align-self: flex-start;
+}
+
+.typingIndicator {
+  display: flex;
+  gap: 4px;
+  padding: 8px 0;
+}
+
+.typingIndicator span {
+  width: 6px;
+  height: 6px;
+  background: var(--softTextColor);
+  border-radius: 50%;
+  animation: typing 1.4s infinite ease-in-out;
+}
+
+.typingIndicator span:nth-child(1) { animation-delay: 0s; }
+.typingIndicator span:nth-child(2) { animation-delay: 0.2s; }
+.typingIndicator span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-10px);
+    opacity: 1;
+  }
+}
+
+.inputContainer {
+  display: flex;
+  gap: 8px;
+  padding: 16px;
+  border-top: 1px solid var(--borderColor);
+  background: var(--softBg);
+}
+
+.chatInput {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid var(--borderColor);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--textColor);
+  font-size: 14px;
+  resize: none;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.chatInput:focus {
+  border-color: #57c4ff;
+}
+
+.chatInput::placeholder {
+  color: var(--softTextColor);
+}
+
+.sendBtn {
+  padding: 10px 16px;
+  background: #7fb88133;
+  color: #7fb881;
+  border: 1px solid #7fb88150;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.sendBtn:hover:not(:disabled) {
+  background: #7fb88150;
+  transform: translateY(-1px);
+}
+
+.sendBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1024px) {
+  .chatPrompt,
+  .chatContainer {
+    display: none;
+  }
+}
+
+/* Custom scrollbar for messages */
+.messagesContainer::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messagesContainer::-webkit-scrollbar-track {
+  background: var(--softBg);
+  border-radius: 3px;
+}
+
+.messagesContainer::-webkit-scrollbar-thumb {
+  background: var(--borderColor);
+  border-radius: 3px;
+}
+
+.messagesContainer::-webkit-scrollbar-thumb:hover {
+  background: var(--softTextColor);
+} 

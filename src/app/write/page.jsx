@@ -26,7 +26,7 @@ import {
   faPlus,
   faChevronDown
 } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import {
@@ -81,183 +81,208 @@ const WritePage = () => {
   const dropdownHandlerRef = useRef(null);
   const linkModalHandlerRef = useRef(null);
 
-  // Handle click outside dropdown with better cleanup
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      try {
-        if (dropdownRef.current && dropdownRef.current.parentNode && !dropdownRef.current.contains(event.target)) {
-          setShowHeadingDropdown(false);
-        }
-      } catch (e) {
-        // Silently handle if DOM elements are already removed
-        setShowHeadingDropdown(false);
+  // Safe DOM manipulation helpers
+  const safeRemoveEventListener = (element, event, handler) => {
+    try {
+      if (element && typeof element.removeEventListener === 'function' && handler) {
+        element.removeEventListener(event, handler);
       }
-    };
-    
-    // Store the current handler reference
-    dropdownHandlerRef.current = handleClickOutside;
-
-    if (showHeadingDropdown && typeof document !== 'undefined') {
-      document.addEventListener('mousedown', handleClickOutside);
+    } catch (error) {
+      // Silently ignore cleanup errors
     }
+  };
 
-    return () => {
-      // Use the stored reference for cleanup
-      if (typeof document !== 'undefined' && dropdownHandlerRef.current) {
-        try {
-          document.removeEventListener('mousedown', dropdownHandlerRef.current);
-        } catch (error) {
-          // Silently handle cleanup errors
-        }
+  const safeAddEventListener = (element, event, handler) => {
+    try {
+      if (element && typeof element.addEventListener === 'function' && handler) {
+        element.addEventListener(event, handler);
+        return true;
       }
-    };
-  }, [showHeadingDropdown]);
-
-  // Handle click outside link modal
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      try {
-        if (linkModalRef.current && linkModalRef.current.parentNode && !linkModalRef.current.contains(event.target)) {
-          setShowLinkModal(false);
-          try {
-            resetLinkModal();
-          } catch (error) {
-            // Silently handle reset errors
-          }
-        }
-      } catch (e) {
-        // Silently handle if DOM elements are already removed
-        setShowLinkModal(false);
-      }
-    };
-    
-    // Store the current handler reference
-    linkModalHandlerRef.current = handleClickOutside;
-
-    if (showLinkModal && typeof document !== 'undefined') {
-      document.addEventListener('mousedown', handleClickOutside);
+    } catch (error) {
+      // Silently ignore setup errors
     }
+    return false;
+  };
 
-    return () => {
-      // Use the stored reference for cleanup
-      if (typeof document !== 'undefined' && linkModalHandlerRef.current) {
-        try {
-          document.removeEventListener('mousedown', linkModalHandlerRef.current);
-        } catch (error) {
-          // Silently handle cleanup errors
-        }
-      }
-    };
-  }, [showLinkModal]);
+  // Safe DOM element check
+  const isElementInDOM = (element) => {
+    try {
+      return element && 
+             element.parentNode && 
+             document.contains && 
+             document.contains(element) &&
+             element.isConnected !== false;
+    } catch (error) {
+      return false;
+    }
+  };
 
-  // Handle click outside category dropdown
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      try {
-        if (categoryDropdownRef.current && categoryDropdownRef.current.parentNode && !categoryDropdownRef.current.contains(event.target)) {
-          setShowCategoryDropdown(false);
-        }
-      } catch (e) {
-        // Silently handle if DOM elements are already removed
+  // Category dropdown click outside handler
+  const handleCategoryClickOutside = useCallback((event) => {
+    try {
+      if (categoryDropdownRef.current && 
+          isElementInDOM(categoryDropdownRef.current) && 
+          !categoryDropdownRef.current.contains(event.target)) {
         setShowCategoryDropdown(false);
       }
-    };
-
-    if (showCategoryDropdown && typeof document !== 'undefined') {
-      document.addEventListener('mousedown', handleClickOutside);
+    } catch (error) {
+      // Silently ignore errors
     }
+  }, []);
 
+  // Category dropdown effect with improved cleanup
+  useEffect(() => {
+    if (showCategoryDropdown) {
+      const added = safeAddEventListener(document, 'mousedown', handleCategoryClickOutside);
+      if (!added) {
+        // Fallback: close dropdown if we can't add listener
+        setShowCategoryDropdown(false);
+      }
+    }
+    
     return () => {
-      if (typeof document !== 'undefined') {
-        try {
-          document.removeEventListener('mousedown', handleClickOutside);
-        } catch (error) {
-          // Silently handle cleanup errors
+      safeRemoveEventListener(document, 'mousedown', handleCategoryClickOutside);
+    };
+  }, [showCategoryDropdown, handleCategoryClickOutside]);
+
+  // Dropdown click outside handler
+  const handleDropdownClickOutside = useCallback((event) => {
+    try {
+      if (dropdownRef.current && 
+          isElementInDOM(dropdownRef.current) && 
+          !dropdownRef.current.contains(event.target)) {
+        setShowHeadingDropdown(false);
+      }
+    } catch (error) {
+      // Silently ignore errors
+    }
+  }, []);
+
+  // Style dropdown effect with improved cleanup
+  useEffect(() => {
+    if (showHeadingDropdown) {
+      const added = safeAddEventListener(document, 'mousedown', handleDropdownClickOutside);
+      if (!added) {
+        // Fallback: close dropdown if we can't add listener
+        setShowHeadingDropdown(false);
+      }
+    }
+    
+    return () => {
+      safeRemoveEventListener(document, 'mousedown', handleDropdownClickOutside);
+    };
+  }, [showHeadingDropdown, handleDropdownClickOutside]);
+
+  // Link modal click outside handler
+  const handleLinkModalClickOutside = useCallback((event) => {
+    try {
+      if (linkModalRef.current && 
+          isElementInDOM(linkModalRef.current) && 
+          !linkModalRef.current.contains(event.target)) {
+        setShowLinkModal(false);
+        resetLinkModal();
+      }
+    } catch (error) {
+      // Silently ignore errors
+    }
+  }, []);
+
+  // Link modal effect with improved cleanup
+  useEffect(() => {
+    if (showLinkModal) {
+      const added = safeAddEventListener(document, 'mousedown', handleLinkModalClickOutside);
+      if (!added) {
+        // Fallback: close modal if we can't add listener
+        setShowLinkModal(false);
+        resetLinkModal();
+      }
+    }
+    
+    return () => {
+      safeRemoveEventListener(document, 'mousedown', handleLinkModalClickOutside);
+    };
+  }, [showLinkModal, handleLinkModalClickOutside]);
+
+  // Global cleanup effect - runs on component unmount
+  useEffect(() => {
+    return () => {
+      try {
+        // Clean up ALL possible event listeners
+        safeRemoveEventListener(document, 'mousedown', handleDropdownClickOutside);
+        safeRemoveEventListener(document, 'mousedown', handleLinkModalClickOutside);
+        safeRemoveEventListener(document, 'mousedown', handleCategoryClickOutside);
+        
+        // Clean up file inputs
+        if (imageInputRef.current && isElementInDOM(imageInputRef.current)) {
+          try {
+            imageInputRef.current.value = '';
+          } catch (error) {
+            // Ignore file input cleanup errors
+          }
         }
+        
+        if (addButtonImageInputRef.current && isElementInDOM(addButtonImageInputRef.current)) {
+          try {
+            addButtonImageInputRef.current.value = '';
+          } catch (error) {
+            // Ignore file input cleanup errors
+          }
+        }
+        
+        if (uploadInputRef.current && isElementInDOM(uploadInputRef.current)) {
+          try {
+            uploadInputRef.current.value = '';
+          } catch (error) {
+            // Ignore file input cleanup errors
+          }
+        }
+      } catch (error) {
+        // Silently handle any cleanup errors
       }
     };
-  }, [showCategoryDropdown]);
+  }, [handleDropdownClickOutside, handleLinkModalClickOutside, handleCategoryClickOutside]);
 
   // Sticky menuBar detection and enhancement
   useEffect(() => {
     const menuBar = menuBarRef.current;
     if (!menuBar) return;
 
-    // Use Intersection Observer for better performance
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        const isSticky = entry.boundingClientRect.top <= 0 && entry.intersectionRatio < 1;
-        if (isSticky) {
-          menuBar.setAttribute('data-sticky', 'true');
-        } else {
-          menuBar.removeAttribute('data-sticky');
+    // Use Intersection Observer for better performance with safety checks
+    let observer = null;
+    try {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          try {
+            const isSticky = entry.boundingClientRect.top <= 0 && entry.intersectionRatio < 1;
+            if (isElementInDOM(menuBar)) {
+              if (isSticky) {
+                menuBar.setAttribute('data-sticky', 'true');
+              } else {
+                menuBar.removeAttribute('data-sticky');
+              }
+            }
+          } catch (error) {
+            // Ignore intersection observer errors
+          }
+        },
+        {
+          threshold: [0, 1],
+          rootMargin: '-1px 0px 0px 0px'
         }
-      },
-      {
-        threshold: [0, 1],
-        rootMargin: '-1px 0px 0px 0px'
-      }
-    );
+      );
 
-    observer.observe(menuBar);
+      observer.observe(menuBar);
+    } catch (error) {
+      // Intersection Observer not supported or failed to create
+    }
 
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
-
-  // Comprehensive cleanup on unmount
-  useEffect(() => {
-    // Capture current ref values at effect setup time to avoid stale closure warnings
-    const imageInput = imageInputRef.current;
-    const addButtonImageInput = addButtonImageInputRef.current;
-    const uploadInput = uploadInputRef.current;
-    
     return () => {
       try {
-        // Clean up input values safely using captured refs
-        if (imageInput && imageInput.parentNode) {
-          try {
-            imageInput.value = '';
-          } catch (e) {
-            // Ignore if input is already removed
-          }
-        }
-        if (addButtonImageInput && addButtonImageInput.parentNode) {
-          try {
-            addButtonImageInput.value = '';
-          } catch (e) {
-            // Ignore if input is already removed
-          }
-        }
-        if (uploadInput && uploadInput.parentNode) {
-          try {
-            uploadInput.value = '';
-          } catch (e) {
-            // Ignore if input is already removed
-          }
-        }
-        
-        // Clean up any remaining event listeners with additional safety
-        if (typeof document !== 'undefined') {
-          if (dropdownHandlerRef.current) {
-            try {
-              document.removeEventListener('mousedown', dropdownHandlerRef.current);
-            } catch (e) {
-              // Ignore cleanup errors
-            }
-          }
-          if (linkModalHandlerRef.current) {
-            try {
-              document.removeEventListener('mousedown', linkModalHandlerRef.current);
-            } catch (e) {
-              // Ignore cleanup errors
-            }
-          }
+        if (observer) {
+          observer.disconnect();
         }
       } catch (error) {
-        // Silently handle any cleanup errors
-        console.warn('Component cleanup warning:', error);
+        // Ignore cleanup errors
       }
     };
   }, []);
@@ -323,40 +348,55 @@ const WritePage = () => {
   useEffect(() => {
     return () => {
       try {
-        if (editor && !editor.isDestroyed) {
+        if (editor && typeof editor.isDestroyed === 'boolean' && !editor.isDestroyed) {
           // Check if editor DOM element exists and is still in the document
           const editorElement = editor.view?.dom;
-          const isElementInDocument = editorElement && document.contains && document.contains(editorElement);
+          const isElementConnected = editorElement && 
+                                   typeof editorElement.isConnected === 'boolean' && 
+                                   editorElement.isConnected &&
+                                   editorElement.parentNode &&
+                                   document.contains &&
+                                   document.contains(editorElement);
           
-          if (isElementInDocument) {
+          if (isElementConnected) {
             // First, blur the editor to prevent pending operations
             try {
-              if (editor.isFocused) {
+              if (typeof editor.isFocused === 'boolean' && editor.isFocused) {
                 editor.commands.blur();
               }
               // Clear content to prevent any pending DOM operations
-              editor.commands.clearContent();
+              if (editor.commands && typeof editor.commands.clearContent === 'function') {
+                editor.commands.clearContent();
+              }
             } catch (commandError) {
               // Editor commands failed, but continue with cleanup
-              console.warn('Editor commands failed during cleanup:', commandError);
             }
           }
           
-          // Destroy the editor with additional safety
-          setTimeout(() => {
+          // Destroy the editor with multiple safety layers
+          const safeDestroy = () => {
             try {
-              if (editor && !editor.isDestroyed) {
+              if (editor && 
+                  typeof editor.isDestroyed === 'boolean' && 
+                  !editor.isDestroyed && 
+                  typeof editor.destroy === 'function') {
                 editor.destroy();
               }
             } catch (destroyError) {
               // Silently handle destroy errors
-              console.warn('Editor destroy error (delayed):', destroyError);
             }
-          }, 0);
+          };
+
+          // Use both immediate and delayed destruction for maximum safety
+          try {
+            safeDestroy();
+          } catch (immediateError) {
+            // If immediate destroy fails, try delayed
+            setTimeout(safeDestroy, 0);
+          }
         }
       } catch (error) {
-        // Silently handle editor cleanup errors
-        console.warn('Editor cleanup error:', error);
+        // Silently handle all editor cleanup errors
       }
     };
   }, [editor]);

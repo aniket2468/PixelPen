@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styles from "./authLinks.module.css";
 import Link from 'next/link';
 import { signOut, useSession } from 'next-auth/react';
@@ -30,23 +30,67 @@ const AuthLinks = () => {
     setDropdownOpen(false);
   };
 
-  const handleClickOutside = (event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setDropdownOpen(false);
+  // Safe DOM element check
+  const isElementInDOM = (element) => {
+    try {
+      return element && 
+             element.parentNode && 
+             document.contains && 
+             document.contains(element) &&
+             element.isConnected !== false;
+    } catch (error) {
+      return false;
     }
   };
 
+  // Safe event listener helpers
+  const safeAddEventListener = (element, event, handler) => {
+    try {
+      if (element && typeof element.addEventListener === 'function' && handler) {
+        element.addEventListener(event, handler);
+        return true;
+      }
+    } catch (error) {
+      // Silently ignore setup errors
+    }
+    return false;
+  };
+
+  const safeRemoveEventListener = (element, event, handler) => {
+    try {
+      if (element && typeof element.removeEventListener === 'function' && handler) {
+        element.removeEventListener(event, handler);
+      }
+    } catch (error) {
+      // Silently ignore cleanup errors
+    }
+  };
+
+  const handleClickOutside = useCallback((event) => {
+    try {
+      if (dropdownRef.current && 
+          isElementInDOM(dropdownRef.current) && 
+          !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    } catch (error) {
+      // Silently ignore errors
+    }
+  }, []);
+
   useEffect(() => {
     if (dropdownOpen) {
-      document.addEventListener('click', handleClickOutside);
-    } else {
-      document.removeEventListener('click', handleClickOutside);
+      const added = safeAddEventListener(document, 'click', handleClickOutside);
+      if (!added) {
+        // Fallback: close dropdown if we can't add listener
+        setDropdownOpen(false);
+      }
     }
 
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      safeRemoveEventListener(document, 'click', handleClickOutside);
     };
-  }, [dropdownOpen]);
+  }, [dropdownOpen, handleClickOutside]);
 
   const userProfilePic = session?.user?.image;
 

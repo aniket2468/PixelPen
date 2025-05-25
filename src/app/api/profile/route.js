@@ -1,6 +1,8 @@
 import { getAuthSession } from '@/utils/auth';
 import prisma from '@/utils/connect';
 import { NextResponse } from 'next/server';
+import { getStorage, ref, deleteObject } from 'firebase/storage';
+import { app } from '@/utils/firebase';
 
 export const POST = async (req) => {
   const session = await getAuthSession();
@@ -62,6 +64,38 @@ export const POST = async (req) => {
 
     // Prepare username value (null if empty, trimmed if provided)
     const usernameValue = (username && username.trim() !== '') ? username.trim() : null;
+
+    // Get current user data to check for existing image
+    const currentUser = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      select: { image: true }
+    });
+
+    // Delete old profile image from Firebase if a new one is being uploaded
+    if (image && currentUser?.image && currentUser.image !== image) {
+      try {
+        // Extract file path from Firebase URL
+        const storage = getStorage(app);
+        const oldImageUrl = currentUser.image;
+        
+        // Check if it's a Firebase Storage URL
+        if (oldImageUrl.includes('firebasestorage.googleapis.com')) {
+          // Extract the file path from the URL
+          const urlParts = oldImageUrl.split('/o/')[1];
+          if (urlParts) {
+            const filePath = decodeURIComponent(urlParts.split('?')[0]);
+            const oldImageRef = ref(storage, filePath);
+            
+            // Delete the old image
+            await deleteObject(oldImageRef);
+            console.log('Old profile image deleted successfully');
+          }
+        }
+      } catch (error) {
+        // Log the error but don't fail the update
+        console.warn('Failed to delete old profile image:', error);
+      }
+    }
 
     // Update user profile
     const updatedUser = await prisma.user.update({
