@@ -61,7 +61,8 @@
 }
 
 .link {
-    border-bottom: 1px solid crimson;
+    border-bottom: 1px solid #7fb881;
+    color: #7fb881;
     width: max-content;
     padding: 2px 0px;
 }

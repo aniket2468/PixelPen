@@ -123,7 +123,7 @@
 }
 
 .toolbarButton:hover {
-    background: #f3f4f6;
+    background: #57c4ff31;
 }
 
 .toolbarButton:disabled {
@@ -132,8 +132,8 @@
 }
 
 .toolbarButton.isActive {
-    background: #ede9fe;
-    color: #7c3aed;
+    background: #7fb88133;
+    color: #7fb881;
     font-weight: 600;
 }
 
@@ -223,15 +223,14 @@
 }
 
 .dropdown button:hover {
-    background: var(--softBg);
-    color: var(--primary, #3b82f6);
+    background: #5e4fff31;
+    color: #5e4fff;
     padding-left: 20px;
-    transform: translateX(4px);
 }
 
 .dropdown button.isActive {
-    background: #ede9fe;
-    color: #7c3aed;
+    background: #da85c731;
+    color: #da85c7;
     font-weight: 600;
     padding-left: 20px;
 }
@@ -280,12 +279,12 @@
     }
 
     .toolbarButton:hover {
-        background: #374151;
+        background: #57c4ff31;
     }
 
     .toolbarButton.isActive {
-        background: #581c87;
-        color: #ddd6fe;
+        background: #7fb88133;
+        color: #7fb881;
     }
 
     .separator {
@@ -310,13 +309,13 @@
     }
 
     .dropdown button:hover {
-        background: #374151;
-        color: #60a5fa;
+        background: #5e4fff31;
+        color: #5e4fff;
     }
 
     .dropdown button.isActive {
-        background: #581c87;
-        color: #ddd6fe;
+        background: #da85c731;
+        color: #da85c7;
     }
 }
 
@@ -339,12 +338,12 @@
 }
 
 :global(.dark) .toolbarButton:hover {
-    background: #374151 !important;
+    background: #57c4ff31 !important;
 }
 
 :global(.dark) .toolbarButton.isActive {
-    background: #581c87 !important;
-    color: #ddd6fe !important;
+    background: #7fb88133 !important;
+    color: #7fb881 !important;
 }
 
 :global(.dark) .separator {
@@ -369,13 +368,13 @@
 }
 
 :global(.dark) .dropdown button:hover {
-    background: #374151 !important;
-    color: #60a5fa !important;
+    background: #5e4fff31 !important;
+    color: #5e4fff !important;
 }
 
 :global(.dark) .dropdown button.isActive {
-    background: #581c87 !important;
-    color: #ddd6fe !important;
+    background: #da85c731 !important;
+    color: #da85c7 !important;
 }
 
 :global(.dark) .titleInput::placeholder {
@@ -402,12 +401,12 @@
 }
 
 :global(.light) .toolbarButton:hover {
-    background: #f3f4f6 !important;
+    background: #57c4ff31 !important;
 }
 
 :global(.light) .toolbarButton.isActive {
-    background: #ede9fe !important;
-    color: #7c3aed !important;
+    background: #7fb88133 !important;
+    color: #7fb881 !important;
 }
 
 :global(.light) .separator {
@@ -432,8 +431,8 @@
 }
 
 :global(.light) .dropdown button:hover {
-    background: #f3f4f6 !important;
-    color: #3b82f6 !important;
+    background: #5e4fff31 !important;
+    color: #5e4fff !important;
 }
 
 :global(.light) .titleInput::placeholder {
@@ -902,9 +901,9 @@
 
 .publish {
     padding: 12px 24px;
-    background-color: #86868652;
-    color: var(--textColor);
-    border: none;
+    background: #7fb88133;
+    color: #7fb881;
+    border: 1px solid #7fb88150;
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
@@ -913,7 +912,7 @@
 }
 
 .publish:hover {
-    background-color: #85858552;
+    background: #7fb88150;
 }
 
 .loading {
@@ -1088,9 +1087,9 @@
 }
 
 .submitButton {
-    background: #3b82f6;
-    border: none;
-    color: white;
+    background: #7fb88133;
+    color: #7fb881;
+    border: 1px solid #7fb88150;
     padding: 10px 20px;
     border-radius: 6px;
     font-size: 14px;
@@ -1100,7 +1099,7 @@
 }
 
 .submitButton:hover:not(:disabled) {
-    background: #2563eb;
+    background: #7fb88150;
 }
 
 .submitButton:disabled {
@@ -1198,13 +1197,13 @@
 }
 
 .categoryDropdownButton:hover {
-    border-color: #3b82f6;
+    border-color: #57c4ff;
 }
 
 .categoryDropdownButton:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: #57c4ff;
+    box-shadow: 0 0 0 3px #57c4ff31;
 }
 
 .categoryButtonContent {
@@ -1263,12 +1262,12 @@
 }
 
 .categoryDropdownItem:hover {
-    background: var(--borderColor);
+    background: #5e4fff31;
 }
 
 .categoryDropdownItem.selected {
-    background: #ede9fe;
-    color: #7c3aed;
+    background: #da85c731;
+    color: #da85c7;
     font-weight: 500;
 }
 

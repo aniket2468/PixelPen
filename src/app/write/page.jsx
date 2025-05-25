@@ -84,7 +84,12 @@ const WritePage = () => {
   // Handle click outside dropdown with better cleanup
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      try {
+        if (dropdownRef.current && dropdownRef.current.parentNode && !dropdownRef.current.contains(event.target)) {
+          setShowHeadingDropdown(false);
+        }
+      } catch (e) {
+        // Silently handle if DOM elements are already removed
         setShowHeadingDropdown(false);
       }
     };
@@ -111,13 +116,18 @@ const WritePage = () => {
   // Handle click outside link modal
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (linkModalRef.current && !linkModalRef.current.contains(event.target)) {
-        setShowLinkModal(false);
-        try {
-          resetLinkModal();
-        } catch (error) {
-          // Silently handle reset errors
+      try {
+        if (linkModalRef.current && linkModalRef.current.parentNode && !linkModalRef.current.contains(event.target)) {
+          setShowLinkModal(false);
+          try {
+            resetLinkModal();
+          } catch (error) {
+            // Silently handle reset errors
+          }
         }
+      } catch (e) {
+        // Silently handle if DOM elements are already removed
+        setShowLinkModal(false);
       }
     };
     
@@ -143,7 +153,12 @@ const WritePage = () => {
   // Handle click outside category dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(event.target)) {
+      try {
+        if (categoryDropdownRef.current && categoryDropdownRef.current.parentNode && !categoryDropdownRef.current.contains(event.target)) {
+          setShowCategoryDropdown(false);
+        }
+      } catch (e) {
+        // Silently handle if DOM elements are already removed
         setShowCategoryDropdown(false);
       }
     };
@@ -309,16 +324,22 @@ const WritePage = () => {
     return () => {
       try {
         if (editor && !editor.isDestroyed) {
-          // Check if editor is still mounted to DOM
+          // Check if editor DOM element exists and is still in the document
           const editorElement = editor.view?.dom;
-          if (editorElement && editorElement.parentNode) {
+          const isElementInDocument = editorElement && document.contains && document.contains(editorElement);
+          
+          if (isElementInDocument) {
             // First, blur the editor to prevent pending operations
-            if (editor.isFocused) {
-              editor.commands.blur();
+            try {
+              if (editor.isFocused) {
+                editor.commands.blur();
+              }
+              // Clear content to prevent any pending DOM operations
+              editor.commands.clearContent();
+            } catch (commandError) {
+              // Editor commands failed, but continue with cleanup
+              console.warn('Editor commands failed during cleanup:', commandError);
             }
-            
-            // Clear content to prevent any pending DOM operations
-            editor.commands.clearContent();
           }
           
           // Destroy the editor with additional safety
@@ -493,9 +514,19 @@ const WritePage = () => {
             URL.revokeObjectURL(objectUrl);
             objectUrl = null;
           }
-          // Safely remove canvas if it has a parent
-          if (canvas && canvas.parentNode) {
-            canvas.parentNode.removeChild(canvas);
+          // Clean up canvas by clearing its dimensions (canvas created via createElement is not in DOM)
+          if (canvas) {
+            try {
+              canvas.width = 0;
+              canvas.height = 0;
+              // Clear context
+              if (ctx) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+              }
+            } catch (canvasCleanupError) {
+              // Canvas cleanup failed, but this is not critical for functionality
+              console.warn('Canvas cleanup warning (non-critical):', canvasCleanupError);
+            }
           }
         } catch (cleanupError) {
           // Silently handle cleanup errors

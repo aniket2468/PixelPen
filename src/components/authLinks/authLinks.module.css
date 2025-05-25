@@ -17,8 +17,7 @@
   }
   
   .link:hover {
-    background: var(--softBg);
-    transform: translateY(-1px);
+    background: #57c4ff31;
   }
   
   .profilePicContainer {
@@ -38,9 +37,8 @@
   }
   
   .profilePicContainer:hover {
-    transform: translateY(-2px);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-    border-color: var(--textColor);
+    border-color: #ff7957;
   }
   
   .profilePic {
@@ -62,7 +60,7 @@
   }
   
   .profilePicContainer:hover .profileIcon {
-    color: var(--primary, #3b82f6);
+    color: #ff7957;
   }
   
   .dropdownMenu {
@@ -79,7 +77,6 @@
     display: flex;
     flex-direction: column;
     opacity: 0;
-    transform: translateY(-10px) scale(0.95);
     animation: dropdownFadeIn 0.2s ease forwards;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -127,7 +124,7 @@
   
   .dropdownItem:hover {
     background: var(--softBg);
-    color: var(--primary, #3b83f69f);
+    color: #ff7957;
     padding-left: 24px;
   }
   
@@ -138,10 +135,7 @@
   .dropdownItem:last-child {
     margin-bottom: 0;
   }
-  
-  .dropdownItem:active {
-    transform: translateX(4px) scale(0.98);
-  }
+
   
   /* Dark mode support */
   @media (prefers-color-scheme: dark) {
@@ -151,11 +145,10 @@
     
     .profilePicContainer:hover {
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-      border-color: var(--textColor);
+      border-color: #ff7957;
     }
     
     .dropdownMenu {
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 4px 10px rgba(0, 0, 0, 0.2);
       backdrop-filter: blur(15px);
       -webkit-backdrop-filter: blur(15px);
     }
@@ -168,7 +161,7 @@
   
   :global(.dark) .profilePicContainer:hover {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
-    border-color: #60a5fa !important;
+    border-color: #ff7957 !important;
   }
   
   :global(.dark) .dropdownMenu {
@@ -188,7 +181,7 @@
   
   :global(.dark) .dropdownItem:hover {
     background: #374151 !important;
-    color: #60a5fa !important;
+    color: #ff7957 !important;
   }
   
   :global(.dark) .link:hover {
@@ -200,7 +193,7 @@
   }
   
   :global(.dark) .profilePicContainer:hover .profileIcon {
-    color: #60a5fa !important;
+    color: #ff7957 !important;
   }
   
   /* Light mode explicit styling */
@@ -210,7 +203,7 @@
   
   :global(.light) .profilePicContainer:hover {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
-    border-color: #3b82f6 !important;
+    border-color: #ff7957 !important;
   }
   
   :global(.light) .dropdownMenu {
@@ -230,7 +223,7 @@
   
   :global(.light) .dropdownItem:hover {
     background: #f3f4f6 !important;
-    color: #3b82f6 !important;
+    color: #ff7957 !important;
   }
   
   :global(.light) .link:hover {
@@ -242,7 +235,7 @@
   }
   
   :global(.light) .profilePicContainer:hover .profileIcon {
-    color: #3b82f6 !important;
+    color: #ff7957 !important;
   }
   
   /* Responsive design */
