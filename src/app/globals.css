@@ -1,8 +1,8 @@
 :root {
   --bg: white;
   --textColor: black;
-  --SoftBg: #f0f0f0;
-  --SoftTextColor: #626262;
+  --softBg: #f0f0f0;
+  --softTextColor: #626262;
   --icon-color-light: #000;
   --icon-color-dark: #fff;
 }
@@ -34,8 +34,8 @@ a{
 .light {
   --bg: white;
   --textColor: black;
-  --SoftBg: #f0f0f0;
-  --SoftTextColor: #626262;
+  --softBg: #f0f0f0;
+  --softTextColor: #626262;
   --icon-color: var(--icon-color-light);
 }
 
