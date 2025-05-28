@@ -14,6 +14,28 @@
     border-radius: 10px;
 }
 
+.errorMessage {
+    background-color: #fee;
+    border: 1px solid #fcc;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 10px;
+    color: #c33;
+    text-align: center;
+}
+
+.errorMessage h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.errorMessage p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
 .socialButton {
     padding: 20px;
     border-radius: 5px;
@@ -26,16 +48,23 @@
     justify-content: center;
 }
 
-.socialButton:first-child {
+.socialButton:first-of-type {
     background-color: #FF5555;
 }
 
-.socialButton:nth-child(2) {
+.socialButton:nth-of-type(2) {
     background-color: #111;
 }
 
-.socialButton:nth-child(3) {
+.socialButton:nth-of-type(3) {
     background-color: #087BEA;
+}
+
+/* Dark mode error message styling */
+.dark .errorMessage {
+    background-color: #4a1a1a;
+    border-color: #8b3a3a;
+    color: #ffb3b3;
 }
 
 @media screen and (max-width:768px) {
@@ -52,5 +81,17 @@
     .socialButton {
         font-weight: 400;
         font-size: 14px;
+    }
+
+    .errorMessage {
+        padding: 15px;
+    }
+
+    .errorMessage h3 {
+        font-size: 16px;
+    }
+
+    .errorMessage p {
+        font-size: 13px;
     }
 }
