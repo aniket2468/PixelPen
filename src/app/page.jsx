@@ -3,14 +3,12 @@ import Feature from "@/components/featured/Featured";
 import CardList from "@/components/cardList/CardList";
 import Menu from "@/components/menu/Menu";
 
-export default function Home({ searchParams }) {
-  const page = parseInt(searchParams.page) || 1
-
+export default function Home() {
   return (
     <div className={styles.main}>
       <Feature/>
       <div id="recent-posts" className={styles.content}>
-        <CardList page={page} cat="" />
+        <CardList cat="" />
         <Menu/>
       </div>
     </div>

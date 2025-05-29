@@ -1,3 +1,9 @@
+.container {
+    padding: 20px;
+    contain: layout style paint;
+    will-change: auto;
+}
+
 .content {
     display: flex;
     gap: 50px;
@@ -5,6 +11,21 @@
 
 .posts {
     flex: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    will-change: auto;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+.posts > div {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000;
+    contain: layout style paint;
+    will-change: transform;
 }
 
 .menu {
@@ -13,10 +34,89 @@
 
 .title {
     margin: 50px 0px;
+    transform: translateZ(0);
+}
+
+.loading, .loadingMore, .error, .endMessage, .noPosts {
+    text-align: center;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    will-change: opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.loading, .loadingMore {
+    background: var(--softBg);
+    color: var(--textColor);
+    border: 1px solid var(--borderColor);
+    animation: pulse 2s ease-in-out infinite;
+    transform: translateZ(0);
+}
+
+.error {
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+:global(.dark) .error {
+    background: #450a0a;
+    color: #fca5a5;
+    border: 1px solid #7f1d1d;
+}
+
+.endMessage {
+    background: var(--softBg);
+    color: var(--softTextColor);
+    border: 1px solid var(--borderColor);
+    font-style: italic;
+}
+
+.noPosts {
+    background: var(--softBg);
+    color: var(--softTextColor);
+    border: 1px solid var(--borderColor);
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: translateZ(0) scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: translateZ(0) scale(0.98);
+    }
 }
 
 @media screen and (max-width: 1024px) {
     .menu {
         display: none;
+    }
+    
+    .content {
+        gap: 30px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .content {
+        gap: 20px;
+    }
+    
+    .title {
+        margin: 30px 0px;
+    }
+    
+    .loading, .loadingMore, .error, .endMessage, .noPosts {
+        padding: 15px;
+        margin: 15px 0;
     }
 }

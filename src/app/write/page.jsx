@@ -835,7 +835,7 @@ const WritePage = () => {
       return;
     }
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts/`, {
+    const res = await fetch(`/api/posts/`, {
       method: "POST",
       body: JSON.stringify({
         title,

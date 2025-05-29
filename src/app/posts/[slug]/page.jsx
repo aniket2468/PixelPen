@@ -22,7 +22,7 @@ const SinglePage = ({ params }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts/${slug}`, {
+        const res = await fetch(`/api/posts/${slug}`, {
           cache: "no-store",
         });
         const json = await res.json();
