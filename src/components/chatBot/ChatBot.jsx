@@ -92,8 +92,7 @@ const ChatBot = ({ articleContent, articleTitle, onChatToggle }) => {
     <div className={styles.chatContainer}>
       <div className={styles.chatHeader}>
         <div className={styles.headerContent}>
-          <div className={styles.botIcon}>🤖</div>
-          <span>Article Discussion</span>
+          <span>PixelPen AI</span>
         </div>
         <button className={styles.closeBtn} onClick={handleClose}>×</button>
       </div>

@@ -3,8 +3,6 @@ import Menu from "@/components/menu/Menu";
 import styles from "./singlePage.module.css";
 import Image from "next/image";
 import Comments from "@/components/comments/Comments";
-import SummarizeButton from "@/components/summarizeButton/SummarizeButton";
-import ChatBot from "@/components/chatBot/ChatBot";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { useState, useEffect } from "react";
 
@@ -20,7 +18,6 @@ const SinglePage = ({ params }) => {
 
   const [data, setData] = useState(null);
   const [loadingData, setLoadingData] = useState(true);
-  const [showChatInSidebar, setShowChatInSidebar] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,10 +36,6 @@ const SinglePage = ({ params }) => {
 
     fetchData();
   }, [slug]);
-
-  const handleChatToggle = (isOpen) => {
-    setShowChatInSidebar(isOpen);
-  };
 
   if (loadingData) {
     return <div>Loading article...</div>;
@@ -88,22 +81,10 @@ const SinglePage = ({ params }) => {
         </div>
 
         <div className={styles.sidebar}>
-          <SummarizeButton 
-            postContent={data?.desc} 
-            postTitle={data?.title}
-            onChatToggle={handleChatToggle}
-            isChatOpen={showChatInSidebar}
+          <Menu 
+            articleContent={data?.desc} 
+            articleTitle={data?.title}
           />
-          
-          {showChatInSidebar && (
-            <ChatBot 
-              articleContent={data?.desc} 
-              articleTitle={data?.title}
-              onChatToggle={handleChatToggle}
-            />
-          )}
-          
-          <Menu />
         </div>
       </div>
     </div>

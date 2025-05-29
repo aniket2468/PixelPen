@@ -14,69 +14,91 @@ const Feature = () => {
   const titleRef = useRef(null);
   const subtitleRef = useRef(null);
   const ctaRef = useRef(null);
+  const contextRef = useRef(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const ctx = gsap.context(() => {
-      // Title animation
-      if (titleRef.current && titleRef.current.children) {
-        gsap.fromTo(titleRef.current.children,
-          {
-            y: 100,
-            opacity: 0,
-            scale: 0.8
-          },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            duration: 1.5,
-            stagger: 0.2,
-            ease: "back.out(1.7)",
-            delay: 0.5
-          }
-        );
-      }
+    // Clean up previous context if it exists
+    if (contextRef.current) {
+      contextRef.current.revert();
+      contextRef.current = null;
+    }
 
-      // Subtitle animation
-      if (subtitleRef.current) {
-        gsap.fromTo(subtitleRef.current,
-          {
-            y: 50,
-            opacity: 0
-          },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 1,
-            ease: "power2.out",
-            delay: 1.2
-          }
-        );
-      }
+    // Small delay to ensure DOM is ready and blob animations can start first
+    const timer = setTimeout(() => {
+      if (!containerRef.current) return;
 
-      // CTA animation
-      if (ctaRef.current && ctaRef.current.children) {
-        gsap.fromTo(ctaRef.current.children,
-          {
-            scale: 0,
-            opacity: 0
-          },
-          {
-            scale: 1,
-            opacity: 1,
-            duration: 0.8,
-            stagger: 0.2,
-            ease: "back.out(1.7)",
-            delay: 1.5
-          }
-        );
-      }
-    }, containerRef);
+      contextRef.current = gsap.context(() => {
+        // Title animation
+        if (titleRef.current && titleRef.current.children && document.contains(titleRef.current)) {
+          gsap.fromTo(titleRef.current.children,
+            {
+              y: 100,
+              opacity: 0,
+              scale: 0.8
+            },
+            {
+              y: 0,
+              opacity: 1,
+              scale: 1,
+              duration: 1.5,
+              stagger: 0.2,
+              ease: "back.out(1.7)",
+              delay: 0.5
+            }
+          );
+        }
+
+        // Subtitle animation
+        if (subtitleRef.current && document.contains(subtitleRef.current)) {
+          gsap.fromTo(subtitleRef.current,
+            {
+              y: 50,
+              opacity: 0
+            },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 1,
+              ease: "power2.out",
+              delay: 1.2
+            }
+          );
+        }
+
+        // CTA animation
+        if (ctaRef.current && ctaRef.current.children && document.contains(ctaRef.current)) {
+          gsap.fromTo(ctaRef.current.children,
+            {
+              scale: 0,
+              opacity: 0
+            },
+            {
+              scale: 1,
+              opacity: 1,
+              duration: 0.8,
+              stagger: 0.2,
+              ease: "back.out(1.7)",
+              delay: 1.5
+            }
+          );
+        }
+      }, containerRef);
+    }, 150); // Slightly longer delay to let blobs initialize first
 
     return () => {
-      ctx.revert();
+      clearTimeout(timer);
+      // Safer cleanup
+      if (contextRef.current) {
+        try {
+          contextRef.current.revert();
+        } catch (error) {
+          console.warn('GSAP context cleanup warning:', error);
+        } finally {
+          contextRef.current = null;
+        }
+      }
     };
   }, [theme]);
 

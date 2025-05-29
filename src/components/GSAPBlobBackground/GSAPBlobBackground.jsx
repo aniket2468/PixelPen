@@ -9,14 +9,28 @@ const GSAPBlobBackground = ({ className = '', blobCount = 8 }) => {
   const { theme } = useContext(ThemeContext);
   const containerRef = useRef(null);
   const blobsRef = useRef([]);
+  const contextRef = useRef(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const ctx = gsap.context(() => {
-      // Animate blobs continuously
-      blobsRef.current.forEach((blob, index) => {
-        if (blob && blob.parentNode) {
+    // Clean up previous context if it exists
+    if (contextRef.current) {
+      contextRef.current.revert();
+      contextRef.current = null;
+    }
+
+    // Small delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      if (!containerRef.current) return;
+
+      contextRef.current = gsap.context(() => {
+        // Filter out null/undefined refs and ensure elements are in DOM
+        const validBlobs = blobsRef.current.filter(blob => 
+          blob && blob.parentNode && document.contains(blob)
+        );
+
+        validBlobs.forEach((blob, index) => {
           // Initial animation with higher opacity
           gsap.fromTo(blob, 
             { 
@@ -55,16 +69,26 @@ const GSAPBlobBackground = ({ className = '', blobCount = 8 }) => {
             yoyo: true,
             ease: "sine.inOut"
           });
-        }
-      });
-    }, containerRef);
+        });
+      }, containerRef);
+    }, 100); // Small delay to ensure DOM is ready
 
     return () => {
-      ctx.revert();
+      clearTimeout(timer);
+      // Safer cleanup
+      if (contextRef.current) {
+        try {
+          contextRef.current.revert();
+        } catch (error) {
+          console.warn('GSAP context cleanup warning:', error);
+        } finally {
+          contextRef.current = null;
+        }
+      }
     };
   }, [theme, blobCount]);
 
-  // Add blob reference safely
+  // Simplified blob reference assignment
   const addBlobRef = (el, index) => {
     if (el) {
       blobsRef.current[index] = el;
