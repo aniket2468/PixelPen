@@ -49,6 +49,7 @@ import Subscript from '@tiptap/extension-subscript';
 import Link from '@tiptap/extension-link';
 import TextAlign from '@tiptap/extension-text-align';
 import Underline from '@tiptap/extension-underline';
+import { UrlDetector, IframeNode } from './extensions/urlDetector';
 
 // Create a lowlight instance with common languages
 const lowlight = createLowlight(common);
@@ -306,6 +307,7 @@ const WritePage = () => {
           class: 'editor-image',
         },
       }),
+      IframeNode,
       Link.configure({
         openOnClick: true,
         HTMLAttributes: {
@@ -335,11 +337,34 @@ const WritePage = () => {
       Superscript,
       Subscript,
       Underline,
+      UrlDetector,
     ],
     content: '',
     editorProps: {
       attributes: {
         class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none',
+      },
+      handleDrop: (view, event, slice, moved) => {
+        if (!moved && event.dataTransfer?.files?.length) {
+          const file = event.dataTransfer.files[0];
+          if (file.type.startsWith('image/')) {
+            // Handle image drop
+            handleImageDrop(file, view);
+            return true;
+          }
+        }
+        return false;
+      },
+      handlePaste: (view, event) => {
+        if (event.clipboardData?.files?.length) {
+          const file = event.clipboardData.files[0];
+          if (file.type.startsWith('image/')) {
+            // Handle image paste
+            handleImageDrop(file, view);
+            return true;
+          }
+        }
+        return false;
       },
     },
   });
@@ -804,6 +829,53 @@ const WritePage = () => {
       editor.chain().focus().toggleHeading({ level }).run();
     }
     setShowHeadingDropdown(false);
+  };
+
+  // Add this function to handle image drops
+  const handleImageDrop = async (file, view) => {
+    try {
+      let fileToUpload = file;
+      
+      try {
+        console.log('Attempting to compress image...');
+        fileToUpload = await compressImage(file);
+        console.log('Compression successful, uploading compressed image...');
+      } catch (compressionError) {
+        console.warn('Image compression failed, uploading original file:', compressionError);
+        fileToUpload = file;
+      }
+      
+      const storage = getStorage(app);
+      const name = new Date().getTime() + '_image.' + (fileToUpload === file ? file.name.split('.').pop() : 'jpg');
+      const storageRef = ref(storage, name);
+      const uploadTask = uploadBytesResumable(storageRef, fileToUpload);
+      
+      uploadTask.on(
+        "state_changed",
+        null,
+        (error) => {
+          console.error("Upload error:", error);
+          alert('Failed to upload image. Please try again.');
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            if (editor && !editor.isDestroyed) {
+              view.dispatch(view.state.tr.replaceSelectionWith(
+                view.state.schema.nodes.image.create({
+                  src: downloadURL,
+                  alt: file.name,
+                  title: file.name,
+                  style: 'max-width: 100%; height: auto; display: block; margin: 1em auto;'
+                })
+              ));
+            }
+          });
+        }
+      );
+    } catch (error) {
+      console.error("Image processing error:", error);
+      alert('Error processing image: ' + error.message);
+    }
   };
 
   if (status === "loading") {

@@ -7,8 +7,13 @@ import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faBrain, faPalette, faUsers } from '@fortawesome/free-solid-svg-icons';
 import GSAPBlobBackground from '@/components/GSAPBlobBackground';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 const AboutPage = () => {
+  const { status } = useSession();
+  const router = useRouter();
+
   const fadeInUp = {
     initial: { opacity: 0, y: 60 },
     animate: { opacity: 1, y: 0 },
@@ -27,6 +32,14 @@ const AboutPage = () => {
     initial: { opacity: 0, scale: 0.8 },
     animate: { opacity: 1, scale: 1 },
     transition: { duration: 0.5, ease: "easeOut" }
+  };
+
+  const handleStartWriting = () => {
+    if (status === 'unauthenticated') {
+      router.push('/login');
+    } else {
+      router.push('/write');
+    }
   };
 
   return (
@@ -184,7 +197,7 @@ const AboutPage = () => {
               </Link>
             </motion.div>
             <motion.div variants={fadeInUp}>
-              <Link href="/write" className={styles.ctaButton}>
+              <button onClick={handleStartWriting} className={styles.ctaButton}>
                 <motion.span
                   whileHover={{ x: 5 }}
                   transition={{ type: "spring", stiffness: 300 }}
@@ -192,7 +205,7 @@ const AboutPage = () => {
                   Start writing
                 </motion.span>
                 <FontAwesomeIcon icon={faArrowRight} className={styles.arrow} />
-              </Link>
+              </button>
             </motion.div>
           </motion.div>
         </motion.div>

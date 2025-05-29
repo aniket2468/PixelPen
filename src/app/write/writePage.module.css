@@ -785,10 +785,12 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     display: block;
     margin: 1em auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .editor :global(.ProseMirror img:hover) {
     transform: scale(1.02);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* Specific styles for compressed images from Add button */
@@ -1374,4 +1376,154 @@
 :global(.light) .categoryDropdownItem.selected {
     background: #e0e7ff !important;
     color: #3730a3 !important;
+}
+
+.editor :global(.ProseMirror) iframe {
+    width: 100%;
+    height: 400px;
+    border: none;
+    border-radius: 8px;
+    margin: 1em auto;
+    display: block;
+    background: #f0f0f0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.editor :global(.ProseMirror) iframe:hover {
+    transform: scale(1.01);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Dark mode iframe styles */
+:global(.dark) .editor :global(.ProseMirror) iframe {
+    background: #2d2d2d;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+:global(.dark) .editor :global(.ProseMirror) iframe:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Improve image styles */
+.editor :global(.ProseMirror img) {
+    max-width: 100%;
+    max-height: 600px;
+    height: auto;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: block;
+    margin: 1em auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.editor :global(.ProseMirror img:hover) {
+    transform: scale(1.02);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Dark mode image styles */
+:global(.dark) .editor :global(.ProseMirror img) {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+:global(.dark) .editor :global(.ProseMirror img:hover) {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.urlPrompt {
+    position: absolute;
+    background: var(--bg);
+    border: 1px solid var(--borderColor);
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    max-width: 400px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.urlPromptText {
+    font-size: 14px;
+    color: var(--textColor);
+    margin: 0;
+    flex: 1;
+}
+
+.urlPromptButtons {
+    display: flex;
+    gap: 8px;
+}
+
+.urlPromptButton {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.urlPromptConfirm {
+    background: #7fb88133;
+    color: #7fb881;
+}
+
+.urlPromptConfirm:hover {
+    background: #7fb88150;
+}
+
+.urlPromptCancel {
+    background: var(--softBg);
+    color: var(--textColor);
+}
+
+.urlPromptCancel:hover {
+    background: var(--borderColor);
+    opacity: 0.8;
+}
+
+/* Dark mode styles */
+:global(.dark) .urlPrompt {
+    background: var(--bg) !important;
+    border-color: var(--borderColor) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+:global(.dark) .urlPromptText {
+    color: var(--textColor) !important;
+}
+
+:global(.dark) .urlPromptCancel {
+    background: var(--softBg) !important;
+    color: var(--textColor) !important;
+}
+
+:global(.dark) .urlPromptCancel:hover {
+    background: var(--borderColor) !important;
+}
+
+/* Light mode styles */
+:global(.light) .urlPrompt {
+    background: var(--bg) !important;
+    border-color: var(--borderColor) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+:global(.light) .urlPromptText {
+    color: var(--textColor) !important;
+}
+
+:global(.light) .urlPromptCancel {
+    background: var(--softBg) !important;
+    color: var(--textColor) !important;
+}
+
+:global(.light) .urlPromptCancel:hover {
+    background: var(--borderColor) !important;
 }
