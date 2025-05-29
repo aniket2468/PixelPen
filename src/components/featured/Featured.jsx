@@ -6,11 +6,11 @@ import { motion } from 'framer-motion'
 import { ThemeContext } from '@/context/ThemeContext'
 import { gsap } from 'gsap'
 import Link from 'next/link'
+import GSAPBlobBackground from '@/components/GSAPBlobBackground'
 
 const Feature = () => {
   const { theme } = useContext(ThemeContext);
   const containerRef = useRef(null);
-  const blobsRef = useRef([]);
   const titleRef = useRef(null);
   const subtitleRef = useRef(null);
   const ctaRef = useRef(null);
@@ -19,50 +19,6 @@ const Feature = () => {
     if (!containerRef.current) return;
 
     const ctx = gsap.context(() => {
-      // Animate blobs continuously
-      blobsRef.current.forEach((blob, index) => {
-        if (blob && blob.parentNode) {
-          // Initial animation
-          gsap.fromTo(blob, 
-            { 
-              scale: 0,
-              opacity: 0,
-              rotation: 0
-            },
-            {
-              scale: 1,
-              opacity: 1,
-              rotation: 360,
-              duration: 2,
-              delay: index * 0.2,
-              ease: "elastic.out(1, 0.5)"
-            }
-          );
-
-          // Continuous floating animation
-          gsap.to(blob, {
-            x: () => gsap.utils.random(-50, 50),
-            y: () => gsap.utils.random(-40, 40),
-            rotation: () => gsap.utils.random(0, 360),
-            scale: () => gsap.utils.random(0.9, 1.1),
-            duration: () => gsap.utils.random(4, 8),
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
-            delay: index * 0.5
-          });
-
-          // Color shifting animation
-          gsap.to(blob, {
-            filter: `hue-rotate(${gsap.utils.random(0, 360)}deg)`,
-            duration: gsap.utils.random(3, 6),
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut"
-          });
-        }
-      });
-
       // Title animation
       if (titleRef.current && titleRef.current.children) {
         gsap.fromTo(titleRef.current.children,
@@ -124,13 +80,6 @@ const Feature = () => {
     };
   }, [theme]);
 
-  // Add blob reference safely
-  const addBlobRef = (el, index) => {
-    if (el) {
-      blobsRef.current[index] = el;
-    }
-  };
-
   // Scroll to recent posts section
   const scrollToRecentPosts = () => {
     const recentPostsSection = document.getElementById('recent-posts') || 
@@ -156,16 +105,8 @@ const Feature = () => {
       ref={containerRef}
       className={`${styles.container} ${theme === 'dark' ? styles.dark : styles.light}`}
     >
-      {/* Animated Background Blobs */}
-      <div className={styles.blobContainer}>
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={i}
-            ref={(el) => addBlobRef(el, i)}
-            className={`${styles.blob} ${styles[`blob${i + 1}`]}`}
-          />
-        ))}
-      </div>
+      {/* GSAP Blob Background */}
+      <GSAPBlobBackground blobCount={8} />
 
       {/* Content */}
       <div className={styles.content}>

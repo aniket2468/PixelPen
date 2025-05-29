@@ -1,4 +1,45 @@
+.main {
+    width: 100%;
+    min-height: 100vh;
+}
+
 .content {
     display: flex;
     gap: 50px;
+    background: var(--bg);
+    min-height: 100vh;
+    padding: 80px 40px;
+    transition: background-color 0.3s ease;
+}
+
+/* Theme-specific backgrounds for content section */
+:global(.light) .content {
+    background: #ffffff !important;
+}
+
+:global(.dark) .content {
+    background: #111827 !important;
+}
+
+/* Responsive padding */
+@media screen and (max-width: 1024px) {
+    .content {
+        padding: 60px 30px;
+        gap: 40px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .content {
+        flex-direction: column;
+        gap: 40px;
+        padding: 40px 20px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .content {
+        padding: 30px 15px;
+        gap: 30px;
+    }
 }

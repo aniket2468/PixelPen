@@ -7,7 +7,7 @@ export default function Home({ searchParams }) {
   const page = parseInt(searchParams.page) || 1
 
   return (
-    <div className={styles.container}>
+    <div className={styles.main}>
       <Feature/>
       <div id="recent-posts" className={styles.content}>
         <CardList page={page} cat="" />

@@ -6,6 +6,7 @@ import styles from './about.module.css';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faBrain, faPalette, faUsers } from '@fortawesome/free-solid-svg-icons';
+import GSAPBlobBackground from '@/components/GSAPBlobBackground';
 
 const AboutPage = () => {
   const fadeInUp = {
@@ -30,6 +31,9 @@ const AboutPage = () => {
 
   return (
     <div className={styles.container}>
+      {/* GSAP Blob Background */}
+      <GSAPBlobBackground blobCount={10} />
+      
       <div className={styles.wrapper}>
         <motion.div 
           className={styles.hero}

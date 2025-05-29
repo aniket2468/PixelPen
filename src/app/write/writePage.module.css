@@ -1340,3 +1340,38 @@
     background: #581c87 !important;
     color: #ddd6fe !important;
 }
+
+/* Theme-based light mode support for category dropdown */
+:global(.light) .categoryDropdownButton {
+    background: #ffffff !important;
+    border-color: #d1d5db !important;
+    color: #1f2937 !important;
+}
+
+:global(.light) .categoryDropdownButton:hover {
+    border-color: #57c4ff !important;
+}
+
+:global(.light) .categoryDropdownButton:focus {
+    border-color: #57c4ff !important;
+    box-shadow: 0 0 0 3px #57c4ff31 !important;
+}
+
+:global(.light) .categoryDropdownMenu {
+    background: #ffffff !important;
+    border-color: #d1d5db !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+:global(.light) .categoryDropdownItem {
+    color: #1f2937 !important;
+}
+
+:global(.light) .categoryDropdownItem:hover {
+    background: #f3f4f6 !important;
+}
+
+:global(.light) .categoryDropdownItem.selected {
+    background: #e0e7ff !important;
+    color: #3730a3 !important;
+}

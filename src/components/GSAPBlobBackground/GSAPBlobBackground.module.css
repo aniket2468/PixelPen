@@ -1,0 +1,202 @@
+.blobContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(1px);
+  will-change: transform;
+  opacity: 0;
+}
+
+/* Light theme blobs */
+.light .blob1 {
+  width: 300px;
+  height: 300px;
+  background: linear-gradient(135deg, rgba(255, 182, 193, 0.4), rgba(173, 216, 230, 0.4));
+  top: 10%;
+  left: 5%;
+}
+
+.light .blob2 {
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(135deg, rgba(144, 238, 144, 0.4), rgba(255, 218, 185, 0.4));
+  top: 20%;
+  right: 10%;
+}
+
+.light .blob3 {
+  width: 250px;
+  height: 250px;
+  background: linear-gradient(135deg, rgba(221, 160, 221, 0.4), rgba(255, 240, 245, 0.4));
+  bottom: 30%;
+  left: 15%;
+}
+
+.light .blob4 {
+  width: 180px;
+  height: 180px;
+  background: linear-gradient(135deg, rgba(255, 218, 185, 0.4), rgba(173, 216, 230, 0.4));
+  bottom: 10%;
+  right: 5%;
+}
+
+.light .blob5 {
+  width: 220px;
+  height: 220px;
+  background: linear-gradient(135deg, rgba(144, 238, 144, 0.4), rgba(255, 182, 193, 0.4));
+  top: 50%;
+  left: 50%;
+}
+
+.light .blob6 {
+  width: 160px;
+  height: 160px;
+  background: linear-gradient(135deg, rgba(255, 240, 245, 0.4), rgba(221, 160, 221, 0.4));
+  top: 70%;
+  right: 20%;
+}
+
+.light .blob7 {
+  width: 280px;
+  height: 280px;
+  background: linear-gradient(135deg, rgba(173, 216, 230, 0.4), rgba(144, 238, 144, 0.4));
+  bottom: 60%;
+  left: 30%;
+}
+
+.light .blob8 {
+  width: 190px;
+  height: 190px;
+  background: linear-gradient(135deg, rgba(255, 182, 193, 0.4), rgba(255, 218, 185, 0.4));
+  top: 30%;
+  right: 40%;
+}
+
+/* Dark theme blobs */
+.dark .blob1 {
+  width: 300px;
+  height: 300px;
+  background: linear-gradient(135deg, rgba(138, 43, 226, 0.5), rgba(30, 144, 255, 0.5));
+  top: 10%;
+  left: 5%;
+}
+
+.dark .blob2 {
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(135deg, rgba(255, 20, 147, 0.5), rgba(0, 191, 255, 0.5));
+  top: 20%;
+  right: 10%;
+}
+
+.dark .blob3 {
+  width: 250px;
+  height: 250px;
+  background: linear-gradient(135deg, rgba(72, 61, 139, 0.5), rgba(123, 104, 238, 0.5));
+  bottom: 30%;
+  left: 15%;
+}
+
+.dark .blob4 {
+  width: 180px;
+  height: 180px;
+  background: linear-gradient(135deg, rgba(0, 206, 209, 0.5), rgba(148, 0, 211, 0.5));
+  bottom: 10%;
+  right: 5%;
+}
+
+.dark .blob5 {
+  width: 220px;
+  height: 220px;
+  background: linear-gradient(135deg, rgba(255, 69, 0, 0.5), rgba(255, 140, 0, 0.5));
+  top: 50%;
+  left: 50%;
+}
+
+.dark .blob6 {
+  width: 160px;
+  height: 160px;
+  background: linear-gradient(135deg, rgba(75, 0, 130, 0.5), rgba(138, 43, 226, 0.5));
+  top: 70%;
+  right: 20%;
+}
+
+.dark .blob7 {
+  width: 280px;
+  height: 280px;
+  background: linear-gradient(135deg, rgba(0, 100, 0, 0.5), rgba(173, 255, 47, 0.5));
+  bottom: 60%;
+  left: 30%;
+}
+
+.dark .blob8 {
+  width: 190px;
+  height: 190px;
+  background: linear-gradient(135deg, rgba(220, 20, 60, 0.5), rgba(255, 105, 180, 0.5));
+  top: 30%;
+  right: 40%;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1200px) {
+  .light .blob1, .dark .blob1 { width: 250px; height: 250px; }
+  .light .blob3, .dark .blob3 { width: 200px; height: 200px; }
+  .light .blob7, .dark .blob7 { width: 230px; height: 230px; }
+}
+
+@media screen and (max-width: 992px) {
+  .light .blob1, .dark .blob1 { width: 200px; height: 200px; }
+  .light .blob2, .dark .blob2 { width: 150px; height: 150px; }
+  .light .blob3, .dark .blob3 { width: 180px; height: 180px; }
+  .light .blob5, .dark .blob5 { width: 170px; height: 170px; }
+  .light .blob7, .dark .blob7 { width: 200px; height: 200px; }
+}
+
+@media screen and (max-width: 768px) {
+  .light .blob1, .dark .blob1 { width: 150px; height: 150px; }
+  .light .blob2, .dark .blob2 { width: 120px; height: 120px; }
+  .light .blob3, .dark .blob3 { width: 140px; height: 140px; }
+  .light .blob4, .dark .blob4 { width: 110px; height: 110px; }
+  .light .blob5, .dark .blob5 { width: 130px; height: 130px; }
+  .light .blob6, .dark .blob6 { width: 100px; height: 100px; }
+  .light .blob7, .dark .blob7 { width: 160px; height: 160px; }
+  .light .blob8, .dark .blob8 { width: 120px; height: 120px; }
+}
+
+@media screen and (max-width: 480px) {
+  /* Hide some blobs for better performance on mobile */
+  .light .blob6, .dark .blob6,
+  .light .blob8, .dark .blob8 {
+    display: none;
+  }
+
+  .light .blob1, .dark .blob1 { width: 120px; height: 120px; }
+  .light .blob2, .dark .blob2 { width: 100px; height: 100px; }
+  .light .blob3, .dark .blob3 { width: 110px; height: 110px; }
+  .light .blob4, .dark .blob4 { width: 90px; height: 90px; }
+  .light .blob5, .dark .blob5 { width: 100px; height: 100px; }
+  .light .blob7, .dark .blob7 { width: 130px; height: 130px; }
+}
+
+@media screen and (max-width: 320px) {
+  /* Further reduce blobs for very small screens */
+  .light .blob3, .dark .blob3,
+  .light .blob7, .dark .blob7 {
+    display: none;
+  }
+
+  .light .blob1, .dark .blob1 { width: 100px; height: 100px; }
+  .light .blob2, .dark .blob2 { width: 80px; height: 80px; }
+  .light .blob4, .dark .blob4 { width: 70px; height: 70px; }
+  .light .blob5, .dark .blob5 { width: 90px; height: 90px; }
+} 
