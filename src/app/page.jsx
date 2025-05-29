@@ -9,7 +9,7 @@ export default function Home({ searchParams }) {
   return (
     <div className={styles.container}>
       <Feature/>
-      <div className={styles.content}>
+      <div id="recent-posts" className={styles.content}>
         <CardList page={page} cat="" />
         <Menu/>
       </div>
