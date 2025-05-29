@@ -7,15 +7,38 @@ const Card = ({ item }) => {
   const stripHtmlTags = (html) => {
     if (!html) return '';
     
-    // Remove HTML tags
-    const stripped = html.replace(/<[^>]*>/g, '');
-    
-    // Decode HTML entities
-    const textarea = document.createElement('textarea');
-    textarea.innerHTML = stripped;
-    const decoded = textarea.value;
-    
-    return decoded;
+    try {
+      // Use DOMParser instead of createElement to avoid DOM manipulation issues
+      if (typeof DOMParser !== 'undefined') {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        return doc.body.textContent || doc.body.innerText || '';
+      } else {
+        // Fallback: simple regex-based tag removal and entity decoding
+        let stripped = html.replace(/<[^>]*>/g, '');
+        
+        // Basic HTML entity decoding without creating DOM elements
+        const entityMap = {
+          '&amp;': '&',
+          '&lt;': '<',
+          '&gt;': '>',
+          '&quot;': '"',
+          '&#39;': "'",
+          '&nbsp;': ' ',
+          '&apos;': "'"
+        };
+        
+        stripped = stripped.replace(/&[a-zA-Z0-9#]+;/g, (entity) => {
+          return entityMap[entity] || entity;
+        });
+        
+        return stripped.trim();
+      }
+    } catch (error) {
+      console.warn('Failed to strip HTML tags, using fallback:', error);
+      // Fallback: simple regex-based tag removal
+      return html.replace(/<[^>]*>/g, '').trim();
+    }
   };
 
   return (

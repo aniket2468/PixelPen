@@ -49,6 +49,27 @@
     font-weight: bold;
 }
 
+.linkRow {
+    display: flex;
+    align-items: right;
+    gap: 20px;
+    font-weight: 300;
+    justify-content: right;
+}
+
+.linkContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: right;
+}
+
+.divider {
+    color: var(--softTextColor);
+    opacity: 0.5;
+    margin: 0 5px;
+}
+
 @media screen and (max-width: 1024px) {
     .links {
         gap: 50px;
@@ -63,12 +84,27 @@
 
     .links {
         width: 100%;
-        justify-content: space-between;
+        justify-content: center;
+    }
+
+    .linkContainer {
+        gap: 10px;
+    }
+
+    .linkRow {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
     }
 }
 
 @media screen and (max-width: 640px) {
     .links {
+        font-size: 14px;
+    }
+
+    .linkRow {
+        gap: 10px;
         font-size: 14px;
     }
 }

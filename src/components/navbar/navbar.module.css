@@ -6,23 +6,15 @@
     position: relative;
   }
   
-  .social {
-    display: flex;
-    gap: 10px;
-    flex: 1;
-  }
-  
   .logo {
-    flex: 1;
-    text-align: center;
     font-size: 36px;
     font-weight: bold;
+    text-align: left;
   }
   
   .links {
     display: flex;
     gap: 20px;
-    flex: 1;
     font-size: 20px;
     align-items: center;
     justify-content: flex-end;
@@ -55,7 +47,7 @@
   }
   
   .searchInput::placeholder {
-    color: var(--SoftTextColor);
+    color: var(--softTextColor);
   }
   
   .searchButton {
@@ -75,16 +67,6 @@
     cursor: pointer;
     color: var(--textColor);
     font-size: 24px;
-  }
-  
-  @media screen and (max-width: 1024px) {
-    .social {
-      display: none;
-    }
-  
-    .logo {
-      text-align: left;
-    }
   }
   
   @media screen and (max-width: 768px) {
