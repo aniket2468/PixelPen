@@ -80,6 +80,12 @@ model Post {
   userEmail String
   user      User      @relation(fields: [userEmail], references: [email])
   comments  Comment[]
+
+  // Performance indexes for 10k+ users
+  @@index([catSlug])
+  @@index([createdAt])
+  @@index([views])
+  @@index([userEmail])
 }
 
 model Comment {
@@ -90,4 +96,7 @@ model Comment {
   user      User     @relation(fields: [userEmail], references: [email])
   postSlug  String
   post      Post     @relation(fields: [postSlug], references: [slug])
+
+  // Performance index for loading comments by post
+  @@index([postSlug])
 }
