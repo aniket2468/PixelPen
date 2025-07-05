@@ -16,7 +16,8 @@ export const GET = async (req, { params }) => {
 
     if (!post) {
       return new NextResponse(
-        JSON.stringify({ message: "Post not found!" }, { status: 404 })
+        JSON.stringify({ message: "Post not found!" }), 
+        { status: 404 }
       );
     }
 
@@ -36,7 +37,8 @@ export const GET = async (req, { params }) => {
   } catch (err) {
     console.log(err);
     return new NextResponse(
-      JSON.stringify({ message: "Something went wrong!" }, { status: 500 })
+      JSON.stringify({ message: "Something went wrong!" }), 
+      { status: 500 }
     );
   }
 };

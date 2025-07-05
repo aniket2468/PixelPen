@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import useSWR from 'swr';
 import { useSession } from 'next-auth/react';
-import { formatDistanceToNow, parseISO } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -15,6 +15,9 @@ const fetcher = async (url) => {
     const error = new Error(data.message);
     throw error;
   }
+
+  // Debug: Log the data structure
+  console.log('Comments API Response:', data);
 
   return data;
 };
@@ -61,30 +64,37 @@ const Comments = ({ postSlug }) => {
         <Link href={`/login?callbackUrl=${currentUrl}`}>Login to write a comment</Link>
       )}
       <div className={styles.comments}>
-        {isLoading
-          ? 'Loading...'
-          : data?.map((item) => (
-              <div className={styles.comment} key={item._id}>
-                <div className={styles.user}>
-                  {item?.user?.image && (
-                    <Image
-                      src={item.user.image}
-                      alt=""
-                      width={50}
-                      height={50}
-                      className={styles.image}
-                    />
-                  )}
-                  <div className={styles.userInfo}>
-                    <span className={styles.username}>{item.user.name}</span>
-                    <span className={styles.date}>
-                      {formatDistanceToNow(parseISO(item.createdAt), { addSuffix: true })}
-                    </span>
-                  </div>
+        {isLoading ? (
+          'Loading...'
+        ) : data?.comments && Array.isArray(data.comments) ? (
+          data.comments.map((item) => (
+            <div className={styles.comment} key={item._id}>
+              <div className={styles.user}>
+                {item?.user?.image && (
+                  <Image
+                    src={item.user.image}
+                    alt=""
+                    width={50}
+                    height={50}
+                    className={styles.image}
+                  />
+                )}
+                <div className={styles.userInfo}>
+                  <span className={styles.username}>{item.user?.name || 'Anonymous'}</span>
+                  <span className={styles.date}>
+                    {formatDistanceToNow(
+                      item.createdAt instanceof Date ? item.createdAt : new Date(item.createdAt), 
+                      { addSuffix: true }
+                    )}
+                  </span>
                 </div>
-                <p className={styles.desc}>{item.desc}</p>
               </div>
-            ))}
+              <p className={styles.desc}>{item.desc}</p>
+            </div>
+          ))
+        ) : (
+          <p>No comments yet. Be the first to comment!</p>
+        )}
       </div>
     </div>
   );

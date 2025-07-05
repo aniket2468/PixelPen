@@ -2,7 +2,7 @@ import Menu from "@/components/menu/Menu";
 import styles from "./singlePage.module.css";
 import Image from "next/image";
 import Comments from "@/components/comments/Comments";
-import { formatDistanceToNow, parseISO } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 import { notFound } from "next/navigation";
 import prisma from "@/utils/connect";
 import { recordView, getViewCount } from "@/lib/cache";
@@ -14,13 +14,18 @@ const calculateReadTime = (text) => {
   return minutes;
 };
 
-// Generate static params for top 1000 posts (pre-generate at build time)
+// Generate static params for popular posts (pre-generate at build time)
 export async function generateStaticParams() {
   try {
+    // Only pre-generate popular posts to reduce build time
+    // Other posts will be generated on-demand with ISR
     const posts = await prisma.post.findMany({
       select: { slug: true },
-      take: 1000, // Pre-generate top 1000 posts
-      orderBy: { views: 'desc' }
+      take: 50, // Pre-generate only top 50 posts
+      orderBy: [
+        { views: 'desc' },
+        { createdAt: 'desc' }
+      ]
     });
     
     return posts.map(post => ({
@@ -31,6 +36,11 @@ export async function generateStaticParams() {
     return [];
   }
 }
+
+// Enable ISR (Incremental Static Regeneration)
+export const revalidate = 3600; // Revalidate every hour
+export const dynamic = 'force-static'; // Enable static generation
+export const dynamicParams = true; // Allow dynamic params not in generateStaticParams
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }) {
@@ -111,7 +121,9 @@ const SinglePage = async ({ params }) => {
     const additionalViews = await getViewCount(slug);
     const totalViews = data.views + additionalViews;
 
-    const formattedDate = formatDistanceToNow(parseISO(data.createdAt), { addSuffix: true });
+    // Handle date parsing - MongoDB returns Date objects, not strings
+    const createdDate = data.createdAt instanceof Date ? data.createdAt : new Date(data.createdAt);
+    const formattedDate = formatDistanceToNow(createdDate, { addSuffix: true });
     const readTime = calculateReadTime(data.desc);
 
     return (

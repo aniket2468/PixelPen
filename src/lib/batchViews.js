@@ -64,6 +64,11 @@ export async function batchUpdateViews() {
 
 // Initialize batch processing (call this in your main app)
 export function startBatchProcessor() {
+  if (!redis) {
+    console.warn('Redis not configured, batch processor disabled');
+    return;
+  }
+
   console.log('Starting view batch processor...');
   
   // Run immediately on start

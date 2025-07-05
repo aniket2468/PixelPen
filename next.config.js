@@ -2,9 +2,19 @@
 const nextConfig = {
   // Image optimization for better performance
   images: {
-    domains: [
-      "lh3.googleusercontent.com",
-      "firebasestorage.googleapis.com"
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'firebasestorage.googleapis.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
     formats: ['image/webp', 'image/avif'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
