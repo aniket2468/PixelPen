@@ -104,33 +104,25 @@ export const authOptions = {
       else if (new URL(url).origin === baseUrl) return url;
       return baseUrl;
     },
-    async session({ session, user, token }) {
-      // Fetch the latest user data from database to include username
-      if (session?.user?.email) {
-        try {
-          const dbUser = await prisma.user.findUnique({
-            where: { email: session.user.email },
-            select: { id: true, name: true, email: true, image: true, username: true }
-          });
-          
-          if (dbUser) {
-            session.user.id = dbUser.id;
-            session.user.username = dbUser.username;
-            // Update other fields that might have changed
-            session.user.name = dbUser.name;
-            session.user.image = dbUser.image;
-          }
-        } catch (error) {
-          console.error('Error fetching user data in session callback:', error);
-        }
+    async session({ session, token }) {
+      // Always populate session from JWT token if available
+      if (token) {
+        session.user.id = token.id;
+        session.user.username = token.username;
+        session.user.email = token.email;
+        session.user.name = token.name;
+        session.user.image = token.image;
       }
       return session;
     },
-    async jwt({ token, user, account, profile }) {
+    async jwt({ token, user }) {
       // Persist user data to JWT token
       if (user) {
         token.id = user.id;
         token.username = user.username;
+        token.email = user.email;
+        token.name = user.name;
+        token.image = user.image;
       }
       return token;
     },

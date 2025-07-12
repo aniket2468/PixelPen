@@ -26,8 +26,11 @@ const AuthLinks = () => {
   };
 
   const handleSignOut = () => {
-    signOut();
-    setDropdownOpen(false);
+    signOut({ redirect: false }).then(() => {
+      setDropdownOpen(false);
+      // Instantly update UI by reloading or using router.refresh if needed
+      window.location.reload();
+    });
   };
 
   // Safe DOM element check
