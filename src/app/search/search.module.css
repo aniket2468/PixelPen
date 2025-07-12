@@ -13,7 +13,7 @@
     flex: 3;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 24px;
     will-change: auto;
     transform: translateZ(0);
     backface-visibility: hidden;
@@ -32,16 +32,49 @@
     flex: 1;
 }
 
+.searchHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
 .title {
-    margin: 50px 0px;
+    margin: 0;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--textColor);
     transform: translateZ(0);
+}
+
+.searchMeta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.searchQuery {
+    font-size: 18px;
+    color: var(--textColor);
+    font-weight: 500;
+}
+
+.searchCount {
+    font-size: 14px;
+    color: var(--softTextColor);
+}
+
+.resultsGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
 .loading, .loadingMore, .error, .endMessage, .noPosts {
     text-align: center;
-    padding: 20px;
-    margin: 20px 0;
-    border-radius: 8px;
+    padding: 24px;
+    margin: 24px 0;
+    border-radius: 12px;
     transition: all 0.3s ease;
     will-change: opacity;
     transform: translateZ(0);
@@ -52,8 +85,25 @@
     background: var(--softBg);
     color: var(--textColor);
     border: 1px solid var(--borderColor);
-    animation: pulse 2s ease-in-out infinite;
-    transform: translateZ(0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 16px;
+}
+
+.loadingSpinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--borderColor);
+    border-top: 2px solid var(--textColor);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .error {
@@ -73,24 +123,43 @@
     color: var(--softTextColor);
     border: 1px solid var(--borderColor);
     font-style: italic;
+    font-size: 16px;
 }
 
 .noPosts {
     background: var(--softBg);
     color: var(--softTextColor);
     border: 1px solid var(--borderColor);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 48px 24px;
 }
 
-@keyframes pulse {
-    0%, 100% {
-        opacity: 1;
-        transform: translateZ(0) scale(1);
-    }
-    50% {
-        opacity: 0.5;
-        transform: translateZ(0) scale(0.98);
-    }
+.noPostsIcon {
+    font-size: 48px;
+    opacity: 0.6;
 }
+
+.noPosts h3 {
+    margin: 0;
+    font-size: 24px;
+    color: var(--textColor);
+}
+
+.noPosts p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.noPosts p:last-child {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+
 
 @media screen and (max-width: 1024px) {
     .menu {
@@ -104,19 +173,51 @@
 
 @media screen and (max-width: 768px) {
     .container {
-        padding: 15px;
+        padding: 16px;
     }
     
     .content {
         gap: 20px;
     }
     
+    .searchHeader {
+        margin-bottom: 24px;
+    }
+    
     .title {
-        margin: 30px 0px;
+        font-size: 28px;
+    }
+    
+    .searchQuery {
+        font-size: 16px;
+    }
+    
+    .searchCount {
+        font-size: 13px;
+    }
+    
+    .resultsGrid {
+        gap: 20px;
     }
     
     .loading, .loadingMore, .error, .endMessage, .noPosts {
-        padding: 15px;
-        margin: 15px 0;
+        padding: 20px;
+        margin: 20px 0;
+    }
+    
+    .noPosts {
+        padding: 40px 20px;
+    }
+    
+    .noPostsIcon {
+        font-size: 40px;
+    }
+    
+    .noPosts h3 {
+        font-size: 20px;
+    }
+    
+    .noPosts p {
+        font-size: 15px;
     }
 }

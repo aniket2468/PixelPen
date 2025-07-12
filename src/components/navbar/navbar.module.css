@@ -4,12 +4,20 @@
     justify-content: space-between;
     height: 100px;
     position: relative;
+    padding: 0 20px;
+    background: var(--bg, #ffffff);
   }
   
   .logo {
     font-size: 36px;
     font-weight: bold;
     text-align: left;
+    color: var(--textColor, #000000);
+  }
+  
+  .logo a {
+    text-decoration: none;
+    color: inherit;
   }
   
   .links {
@@ -20,56 +28,101 @@
     justify-content: flex-end;
   }
   
-  .searchForm {
-    display: flex;
-    align-items: center;
-    transition: max-width 0.5s ease, opacity 0.5s ease;
-  }
-  
-  .searchForm.show {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    max-width: 100%;
-  }
-  
-  .searchInput {
-    padding: 10px;
-    border: 1px solid var(--textColor);
-    border-radius: 20px 0 0 20px;
-    outline: none;
-    width: 200px;
-    background-color: var(--bg);
-    color: var(--textColor);
-    transition: width 0.5s ease;
-    height: 35px;
-  }
-  
-  .searchInput::placeholder {
-    color: var(--softTextColor);
-  }
-  
-  .searchButton {
-    padding: 10px;
-    border: 1px solid var(--textColor);
-    background-color: var(--textColor);
-    color: var(--bg);
-    cursor: pointer;
-    border-radius: 0 20px 20px 0;
-    height: 35px;
+  .searchContainer {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 600px;
+    width: 90%;
+    z-index: 1000;
   }
   
   .searchToggle {
-    display: none;
+    display: inline-block;
     background: none;
     border: none;
     cursor: pointer;
     color: var(--textColor);
     font-size: 24px;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+  }
+  
+  .searchToggle:hover {
+    background-color: var(--softBg);
+  }
+  
+  .searchInline {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 320px;
+    max-width: 400px;
+    width: 100%;
+  }
+
+  .searchForm {
+    width: 100%;
+  }
+
+  .inputContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: var(--bg);
+    border: 2px solid var(--borderColor, #e5e7eb);
+    border-radius: 9999px;
+    padding: 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  .inputContainer:focus-within {
+    border-color: var(--textColor, #000);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+  }
+
+  .searchIcon {
+    position: absolute;
+    left: 16px;
+    color: var(--softTextColor, #626262);
+    font-size: 18px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .searchInput {
+    width: 100%;
+    padding: 14px 16px 14px 48px;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 16px;
+    color: var(--textColor, #000);
+    border-radius: 12px;
+    font-family: inherit;
+  }
+
+  .searchInput::placeholder {
+    color: var(--softTextColor, #626262);
+  }
+
+  .dropdownWrapper {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1000;
   }
   
   @media screen and (max-width: 768px) {
+    .container {
+      padding: 0 16px;
+    }
+    
     .logo {
       font-size: 24px;
     }
@@ -78,27 +131,6 @@
   @media screen and (max-width: 640px) {
     .links {
       justify-content: flex-end;
-    }
-  
-    .searchForm {
-      display: none;
-      opacity: 0;
-      max-width: 0;
-    }
-  
-    .searchForm.show {
-      display: flex;
-      opacity: 1;
-      position: absolute;
-      top: 32px;
-      left: 32px;
-      right: 0px;
-      margin: 0 auto;
-      max-width: 100%;
-    }
-  
-    .searchToggle {
-      display: inline-block;
     }
   }
   

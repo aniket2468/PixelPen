@@ -24,7 +24,7 @@ const fetcher = async (url) => {
 
 const Comments = ({ postSlug }) => {
   const { data: session, status } = useSession();
-  const { data, mutate, isLoading } = useSWR(
+  const { data: comments, mutate, isLoading } = useSWR(
     `/api/comments?postSlug=${postSlug}`,
     fetcher
   );
@@ -66,8 +66,8 @@ const Comments = ({ postSlug }) => {
       <div className={styles.comments}>
         {isLoading ? (
           'Loading...'
-        ) : data?.comments && Array.isArray(data.comments) ? (
-          data.comments.map((item) => (
+        ) : comments && Array.isArray(comments) ? (
+          comments.map((item) => (
             <div className={styles.comment} key={item._id}>
               <div className={styles.user}>
                 {item?.user?.image && (

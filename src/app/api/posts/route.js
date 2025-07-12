@@ -3,25 +3,21 @@ import prisma from "@/utils/connect";
 import { NextResponse } from "next/server";
 import { getCachedData } from "@/lib/cache";
 
-// Fetch paginated posts - Optimized for 10k+ users with caching
+// Fetch posts - Optimized for 10k+ users with caching
 export const GET = async (req) => {
   const { searchParams } = new URL(req.url);
 
-  const page = parseInt(searchParams.get("page")) || 1;
   const cat = searchParams.get("cat") || "";
   const type = searchParams.get("type") || "";
 
-  const POST_PER_PAGE = 3;
-
   try {
     if (type === "most-viewed") {
-      const cacheKey = `posts:most-viewed:${POST_PER_PAGE}`;
+      const cacheKey = `posts:most-viewed`;
       const posts = await getCachedData(
         cacheKey,
         async () => {
           return await prisma.post.findMany({
             orderBy: { views: "desc" },
-            take: POST_PER_PAGE,
             include: { user: true }
           });
         },
@@ -29,45 +25,35 @@ export const GET = async (req) => {
       );
       return NextResponse.json(posts, { status: 200 });
     } else if (type === "random") {
-      const cacheKey = `posts:random:page-${page}:${POST_PER_PAGE}`;
+      const cacheKey = `posts:random`;
       const posts = await getCachedData(
         cacheKey,
         async () => {
           return await prisma.post.findMany({
             where: { img: { not: "" } },
             orderBy: { createdAt: "desc" },
-            take: POST_PER_PAGE,
-            skip: (page - 1) * POST_PER_PAGE,
             include: { user: true }
           });
         },
-        180 // Cache for 3 minutes (shorter for pagination)
+        180 // Cache for 3 minutes
       );
       return NextResponse.json(posts, { status: 200 });
     } else {
-      const cacheKey = `posts:list:page-${page}:cat-${cat}:${POST_PER_PAGE}`;
-      const result = await getCachedData(
+      const cacheKey = `posts:list:cat-${cat}`;
+      const posts = await getCachedData(
         cacheKey,
         async () => {
-          const query = {
-            take: POST_PER_PAGE,
-            skip: POST_PER_PAGE * (page - 1),
+          return await prisma.post.findMany({
             where: {
               ...(cat && { catSlug: cat }),
             },
             orderBy: { createdAt: "desc" },
             include: { user: true }
-          };
-
-          const [posts, count] = await prisma.$transaction([
-            prisma.post.findMany(query),
-            prisma.post.count({ where: query.where }),
-          ]);
-          return { posts, count };
+          });
         },
         180 // Cache for 3 minutes
       );
-      return NextResponse.json(result, { status: 200 });
+      return NextResponse.json(posts, { status: 200 });
     }
   } catch (err) {
     console.log(err);

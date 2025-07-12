@@ -42,7 +42,7 @@ const MenuPosts = ({ withImage, type }) => {
 
   return (
     <div className={styles.items}>
-      {posts.map((post, index) => (
+      {posts.slice(0, 3).map((post, index) => (
         <Link href={`/posts/${post.slug}`} key={post._id || index} className={styles.item}>
           {withImage && post.img && (
             <div className={styles.imageContainer}>

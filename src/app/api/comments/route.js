@@ -3,12 +3,10 @@ import prisma from "@/utils/connect";
 import { NextResponse } from "next/server";
 import { getCachedData, clearCache } from "@/lib/cache";
 
-// GET ALL COMMENTS OF A POST - Optimized with caching and pagination
+// GET ALL COMMENTS OF A POST - Optimized with caching
 export const GET = async (req) => {
   const { searchParams } = new URL(req.url);
   const postSlug = searchParams.get("postSlug");
-  const page = parseInt(searchParams.get("page")) || 1;
-  const limit = parseInt(searchParams.get("limit")) || 10;
 
   if (!postSlug) {
     return new NextResponse(
@@ -18,35 +16,20 @@ export const GET = async (req) => {
   }
 
   try {
-    const cacheKey = `comments:${postSlug}:page-${page}:limit-${limit}`;
-    const result = await getCachedData(
+    const cacheKey = `comments:${postSlug}`;
+    const comments = await getCachedData(
       cacheKey,
       async () => {
-        const [comments, totalCount] = await prisma.$transaction([
-          prisma.comment.findMany({
-            where: { postSlug },
-            include: { user: true },
-            orderBy: { createdAt: 'desc' },
-            skip: (page - 1) * limit,
-            take: limit,
-          }),
-          prisma.comment.count({
-            where: { postSlug }
-          })
-        ]);
-
-        return {
-          comments,
-          totalCount,
-          currentPage: page,
-          totalPages: Math.ceil(totalCount / limit),
-          hasMore: page * limit < totalCount
-        };
+        return await prisma.comment.findMany({
+          where: { postSlug },
+          include: { user: true },
+          orderBy: { createdAt: 'desc' }
+        });
       },
       120 // Cache for 2 minutes (comments change more frequently)
     );
 
-    return new NextResponse(JSON.stringify(result), { status: 200 });
+    return new NextResponse(JSON.stringify(comments), { status: 200 });
   } catch (err) {
     console.log(err);
     return new NextResponse(

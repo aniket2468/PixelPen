@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from "./navbar.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,81 +7,52 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import Link from "next/link";
 import ThemeToggle from '../themeToggle/ThemeToggle';
 import AuthLinks from '../authLinks/AuthLinks';
+import SearchDropdown from '../searchDropdown/SearchDropdown';
 
 const Navbar = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [showSearch, setShowSearch] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [query, setQuery] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const inputRef = useRef(null);
   const router = useRouter();
-  const searchFormRef = useRef(null);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim() !== '') {
-      router.push(`/search?query=${encodeURIComponent(searchQuery)}`);
-    }
-  };
-
-  // Safe DOM element check
-  const isElementInDOM = (element) => {
-    try {
-      return element && 
-             element.parentNode && 
-             document.contains && 
-             document.contains(element) &&
-             element.isConnected !== false;
-    } catch (error) {
-      return false;
-    }
-  };
-
-  // Safe event listener helpers
-  const safeAddEventListener = (element, event, handler) => {
-    try {
-      if (element && typeof element.addEventListener === 'function' && handler) {
-        element.addEventListener(event, handler);
-        return true;
-      }
-    } catch (error) {
-      // Silently ignore setup errors
-    }
-    return false;
-  };
-
-  const safeRemoveEventListener = (element, event, handler) => {
-    try {
-      if (element && typeof element.removeEventListener === 'function' && handler) {
-        element.removeEventListener(event, handler);
-      }
-    } catch (error) {
-      // Silently ignore cleanup errors
-    }
-  };
-
-  const handleClickOutside = useCallback((event) => {
-    try {
-      if (searchFormRef.current && 
-          isElementInDOM(searchFormRef.current) && 
-          !searchFormRef.current.contains(event.target)) {
-        setShowSearch(false);
-      }
-    } catch (error) {
-      // Silently ignore errors
-    }
+  // Check if we're on mobile
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkIfMobile();
+    window.addEventListener('resize', checkIfMobile);
+    return () => window.removeEventListener('resize', checkIfMobile);
   }, []);
 
-  useEffect(() => {
-    if (showSearch) {
-      const added = safeAddEventListener(document, 'click', handleClickOutside);
-      if (!added) {
-        // Fallback: close search if we can't add listener
-        setShowSearch(false);
-      }
-    }
+  // Handle search input change
+  const handleInputChange = (e) => {
+    setQuery(e.target.value);
+    setShowDropdown(true);
+  };
 
-    return () => {
-      safeRemoveEventListener(document, 'click', handleClickOutside);
-    };
-  }, [showSearch, handleClickOutside]);
+  // Handle search submit
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (query.trim()) {
+      router.push(`/search?query=${encodeURIComponent(query)}`);
+      setShowDropdown(false);
+      inputRef.current && inputRef.current.blur();
+    }
+  };
+
+  // Handle search icon click (mobile)
+  const handleSearchClick = () => {
+    if (isMobile) {
+      router.push('/mobile-search');
+    }
+  };
+
+  // Hide dropdown on blur (with delay for click)
+  const handleBlur = () => {
+    setTimeout(() => setShowDropdown(false), 150);
+  };
 
   return (
     <div className={styles.container}>
@@ -90,25 +61,54 @@ const Navbar = () => {
       </div>
       <div className={styles.links}>
         <ThemeToggle />
-        <form
-          className={`${styles.searchForm} ${showSearch ? styles.show : ''}`}
-          onSubmit={handleSearch}
-          ref={searchFormRef}
-        >
-          <input
-            type="text"
-            className={styles.searchInput}
-            placeholder="Search blogs..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <button type="submit" className={styles.searchButton}>
+        {/* Desktop: Inline search input */}
+        {!isMobile && (
+          <div className={styles.searchInline}>
+            <form onSubmit={handleSubmit} className={styles.searchForm} autoComplete="off">
+              <div className={styles.inputContainer}>
+                <FontAwesomeIcon icon={faMagnifyingGlass} className={styles.searchIcon} />
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={query}
+                  onChange={handleInputChange}
+                  onFocus={() => setShowDropdown(true)}
+                  onBlur={handleBlur}
+                  placeholder="Search blogs..."
+                  className={styles.searchInput}
+                  autoComplete="off"
+                  aria-label="Search blogs"
+                />
+              </div>
+            </form>
+            {/* Dropdown below input */}
+            {showDropdown && (
+              <div className={styles.dropdownWrapper}>
+                <SearchDropdown 
+                  query={query}
+                  onSelect={(val) => {
+                    setQuery(val);
+                    router.push(`/search?query=${encodeURIComponent(val)}`);
+                    setShowDropdown(false);
+                  }}
+                  onBlur={handleBlur}
+                  isInline={true}
+                />
+              </div>
+            )}
+          </div>
+        )}
+        {/* Mobile: Search icon button */}
+        {isMobile && (
+          <button 
+            className={styles.searchToggle} 
+            onClick={handleSearchClick}
+            aria-label="Search"
+            title="Search blogs"
+          >
             <FontAwesomeIcon icon={faMagnifyingGlass} />
           </button>
-        </form>
-        <button className={styles.searchToggle} onClick={() => setShowSearch(!showSearch)}>
-          <FontAwesomeIcon icon={faMagnifyingGlass} />
-        </button>
+        )}
         <AuthLinks />
       </div>
     </div>
