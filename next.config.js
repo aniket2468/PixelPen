@@ -86,23 +86,7 @@ const nextConfig = {
     ];
   },
 
-  // Redirects for SEO
-  async redirects() {
-    return [
-      {
-        source: '/blog/:path*',
-        has: [
-          {
-            type: 'query',
-            key: 'cat',
-            value: '(?<category>.*)',
-          },
-        ],
-        destination: '/blog?cat=:category',
-        permanent: false,
-      },
-    ];
-  },
+
 
   // Enable static optimization
   trailingSlash: false,
