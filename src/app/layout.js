@@ -8,6 +8,7 @@ import { ThemeContextProvider } from "@/context/ThemeContext";
 import ThemeProvider from "@/providers/ThemeProvider";
 import AuthProvider from "@/providers/AuthProvider";
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { Analytics } from '@vercel/analytics/react';
 
 // Prevent FontAwesome from adding CSS automatically
 config.autoAddCss = false;
@@ -74,6 +75,7 @@ export default function RootLayout({ children }) {
             </ThemeContextProvider>
           </AuthProvider>
         </ErrorBoundary>
+        <Analytics />
       </body>
     </html>
   );
