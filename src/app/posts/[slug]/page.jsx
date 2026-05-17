@@ -5,7 +5,7 @@ import Comments from "@/components/comments/Comments";
 import { formatDistanceToNow } from "date-fns";
 import { notFound } from "next/navigation";
 import prisma from "@/utils/connect";
-import { recordView, getViewCount } from "@/lib/cache";
+import ViewTracker from "@/components/viewTracker/ViewTracker";
 
 const calculateReadTime = (text) => {
   const wordsPerMinute = 200;
@@ -114,13 +114,6 @@ const SinglePage = async ({ params }) => {
       notFound();
     }
 
-    // Record view for analytics (non-blocking)
-    recordView(slug).catch(err => console.error('View recording failed:', err));
-    
-    // Get additional views from Redis
-    const additionalViews = await getViewCount(slug);
-    const totalViews = data.views + additionalViews;
-
     // Handle date parsing - MongoDB returns Date objects, not strings
     const createdDate = data.createdAt instanceof Date ? data.createdAt : new Date(data.createdAt);
     const formattedDate = formatDistanceToNow(createdDate, { addSuffix: true });
@@ -140,7 +133,7 @@ const SinglePage = async ({ params }) => {
               <div className={styles.userTextContainer}>
                 <span className={styles.username}>{data.user.name}</span>
                 <span className={styles.date}>
-                  {formattedDate} • {readTime} min read • {totalViews} views
+                  {formattedDate} • <ViewTracker slug={slug} initialViews={data.views} readTime={readTime} />
                 </span>
               </div>
             </div>
