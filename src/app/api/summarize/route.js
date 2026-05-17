@@ -9,13 +9,10 @@ export async function POST(req) {
       return NextResponse.json({ error: "Article text is required" }, { status: 400 });
     }
 
-    // Check if XAI_API_KEY is available
     if (!process.env.XAI_API_KEY) {
-      console.error("XAI_API_KEY is not set in environment variables");
-      return NextResponse.json({ error: "API key not configured" }, { status: 500 });
+      return NextResponse.json({ error: "xAI API key not configured. Add XAI_API_KEY to your .env.local file." }, { status: 500 });
     }
 
-    // Use the xAI API for summarization with grok-3-mini-beta model
     const xaiResponse = await fetch("https://api.x.ai/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -42,10 +39,7 @@ export async function POST(req) {
     if (!xaiResponse.ok) {
       const errorDetails = await xaiResponse.json().catch(() => ({}));
       console.error("xAI API error:", errorDetails);
-      return NextResponse.json({ 
-        error: errorDetails.error?.message || "xAI API error", 
-        status: xaiResponse.status 
-      }, { status: xaiResponse.status });
+      return NextResponse.json({ error: errorDetails.error?.message || "xAI API error" }, { status: xaiResponse.status });
     }
 
     const data = await xaiResponse.json();

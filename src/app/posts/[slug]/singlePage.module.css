@@ -5,14 +5,9 @@
 }
 
 .sidebar {
-    flex: 2; /* or flex: 1 if you want narrower sidebar */
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
-    margin-top: 60px;
+    flex: 2;
     min-width: 350px;
-  }
+}
 
 .textContainer {
     flex: 1;

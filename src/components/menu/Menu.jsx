@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import styles from "./menu.module.css"
 import MenuPosts from '../menuPosts/MenuPosts'
 import MenuCategories from '../menuCategories/MenuCategories'
@@ -8,13 +8,31 @@ import ChatBot from "@/components/chatBot/ChatBot"
 
 const Menu = ({ articleContent, articleTitle }) => {
   const [showChatInSidebar, setShowChatInSidebar] = useState(false);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    // When cursor is on LEFT and page scrolls, sync sidebar scroll proportionally
+    const handlePageScroll = () => {
+      const maxSidebarScroll = el.scrollHeight - el.clientHeight;
+      if (maxSidebarScroll <= 0) return;
+      const maxPageScroll = document.documentElement.scrollHeight - window.innerHeight;
+      if (maxPageScroll <= 0) return;
+      el.scrollTop = (window.scrollY / maxPageScroll) * maxSidebarScroll;
+    };
+
+    window.addEventListener('scroll', handlePageScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handlePageScroll);
+  }, []);
 
   const handleChatToggle = (isOpen) => {
     setShowChatInSidebar(isOpen);
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} ref={containerRef}>
       {/* Article-specific features: Summarize Button and Chat */}
       {articleContent && articleTitle && (
         <div className={styles.articleFeatures}>

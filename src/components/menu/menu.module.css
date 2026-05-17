@@ -1,6 +1,18 @@
 .container {
     flex: 2;
-    margin-top: 60px;
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    height: 100vh;
+    overflow-y: auto;
+    padding-top: 60px;
+    padding-bottom: 40px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.container::-webkit-scrollbar {
+    display: none;
 }
 
 .articleFeatures {
