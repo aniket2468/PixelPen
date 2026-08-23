@@ -5,11 +5,15 @@
 
 .content {
     display: flex;
-    gap: 50px;
+    gap: 48px;
     background: var(--bg);
     min-height: 100vh;
     padding: 80px 40px;
     transition: background-color 0.3s ease;
+    overflow-x: clip;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
 }
 
 /* Theme-specific backgrounds for content section */

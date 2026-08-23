@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed:learning": "node scripts/seed-learning-path.js"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.4.1",

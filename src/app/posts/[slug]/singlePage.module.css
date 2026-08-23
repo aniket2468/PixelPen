@@ -6,7 +6,8 @@
 
 .sidebar {
     flex: 2;
-    min-width: 350px;
+    min-width: 0;
+    max-width: 100%;
 }
 
 .textContainer {
@@ -60,10 +61,14 @@
 .content {
     display: flex;
     gap: 50px;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
 }
 
 .post {
     flex: 5;
+    min-width: 0;
     margin-top: 60px;
 }
 
@@ -405,10 +410,6 @@
         font-size: 48px;
     }
     
-    .sidebar {
-        min-width: 220px;
-    }
-    
     .content {
         gap: 40px;
     }
@@ -416,7 +417,6 @@
 
 @media screen and (max-width: 1180px) {
     .sidebar {
-        min-width: 200px;
         flex: 1.8;
     }
     
@@ -427,7 +427,6 @@
 
 @media screen and (max-width: 1080px) {
     .sidebar {
-        min-width: 180px;
         flex: 1.5;
     }
     

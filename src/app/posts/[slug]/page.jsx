@@ -6,6 +6,7 @@ import { formatDistanceToNow } from "date-fns";
 import { notFound } from "next/navigation";
 import prisma from "@/utils/connect";
 import ViewTracker from "@/components/viewTracker/ViewTracker";
+import ContinueLearning from "@/components/continueLearning/ContinueLearning";
 
 const calculateReadTime = (text) => {
   const wordsPerMinute = 200;
@@ -148,6 +149,7 @@ const SinglePage = async ({ params }) => {
         <div className={styles.content}>
           <div className={styles.post}>
             <div className={styles.description} dangerouslySetInnerHTML={{ __html: data.desc }} />
+            <ContinueLearning slug={slug} />
             <div className={styles.comment}>
               <Comments postSlug={slug} />
             </div>

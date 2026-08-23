@@ -2,18 +2,20 @@
     margin-top: 35px;
     margin-bottom: 60px;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
 }
 
 .categoryItem {
-    padding: 10px 25px;
+    padding: 10px 12px;
     border-radius: 10px;
     font-size: 14px;
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 .categoryItem.style {
